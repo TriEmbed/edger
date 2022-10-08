@@ -1,0 +1,5 @@
+#!/bin/bash
+if [ $# -lt 1 ] ; then
+  echo "usage: formatbash <path to bash script file>
+fi
+shfmt -i 2 -l -w $1

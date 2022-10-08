@@ -1,0 +1,261 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2022-07-25T15:50:09.383603308"/>
+	<meta name="changed" content="2022-07-26T12:06:44.188940087"/>
+	<style type="text/css">
+		@page { size: 8.5in 11in; margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.08in; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+Edger User manual</h1>
+<p>(This is a work in progress. This line will be removed when the
+document is finished.)</p>
+<p>The following are step by step instructions for making the
+ESP32/Dialog FPGA Edger prototype system work and run a simple
+“blinky” application. Colored text pertains to the difference in
+steps when using a Quem80 prototype ESP32C3 hardware board vs an off
+the shelf ESP32 board in combination with a Dialog FPGA “DIP board”
+such as the SLG47004V-DIP. 
+</p>
+<p>Prerequisites:</p>
+<ol>
+	<li><p style="margin-bottom: 0in">An Ubuntu Linux system or Windows
+	WSL system running Ubuntu. Support for other Linux distros and OS
+	types will be offered in response to demand. 
+	</p>
+	<li><p style="margin-bottom: 0in">An ESP32 single board computer
+	(regular and S2 types have been tested) and a Dialog SLG47004V-DIP
+	or a Quem80 ESP32C3 board with socket for SLG47004V-DIP (plus that
+	board). 
+	</p>
+	<li><p style="margin-bottom: 0in">A long solderless breadboard</p>
+	<li><p style="margin-bottom: 0in">10cm or longer male to male and
+	male to female solderless breadboard jumpers</p>
+	<li><p style="margin-bottom: 0in">A 500-1500 ohm resistor</p>
+	<li><p style="margin-bottom: 0in">An LED with Vf well below 3.3v
+	such as a typical green type</p>
+	<li><p>A micro USB cable for an ESP32 board or one (version 0.70) or
+	two (version 0.60) mini USB cables for a Quem80 board. WARNING! The
+	mating mini USB connectors on Quem80 boards are extraordinarily
+	delicate. With thumb held on the connector gently insert the
+	cable(s). Then &gt;&gt;&gt; AVOID &lt;&lt;&lt; ever removing the
+	cable and &gt;&gt;&gt; AVOID &lt;&lt;&lt; bending the cable up close
+	to the connector, creating a lever arm torquing the connector.
+	Failure to follow these practices will result in the connector
+	solder joints fracturing. A fix for this defect is in the todo list.
+	Consult Nick Edgington or Pete Soper for advice about reinforcing
+	the connector with various methods.</p>
+</ol>
+<p>The TriEmbed repositories and user manual URLs:</p>
+<ol>
+	<li><p style="margin-bottom: 0in">http://github.com/TriEmbed/que_league
+	– A repository of general project data the DialogDesigns
+	subdirectory of which holds example Dialog FPGA configurations.</p>
+	<li><p style="margin-bottom: 0in">http://github.com/TriEmbed/que_tools
+	– A repo holding the system build scripts and programs.
+	Subdirectory linux contains script installit, currently at version
+	0.28, and this is the starting point for a system install.</p>
+	<li><p style="margin-bottom: 0in">http://github.com/TriEmbed/que_ant
+	– A repo holding C code that has node.js code added to it and that
+	gets customized by an installation. This is the code that is
+	compiled and linked and flashed into the ESP32 chip. This repo is
+	automatically installed by the above installit script.</p>
+	<li><p style="margin-bottom: 0in">http://github.com/TriEmbed/que_aardvark
+	– A repo holding node.js code that provides a web-based local
+	application with a web browser user interface. This application
+	controls the que_ant code in the ESP32 to use it to program FPGAs
+	connected to the ESP32 via an I2C bus. This repo is automatically
+	installed by the above installit script.</p>
+	<li><p style="margin-bottom: 0in">https://triembed.org/edger-user-manual
+	is this web page containing the user manual.</p>
+	<li><p>The Espressif Integrated Development Framework (IDF) repo is
+	automatically installed by the above installit script into
+	$targetdir (defaults to ~)/esp-idf.</p>
+</ol>
+<p>Downloading:</p>
+<ol>
+	<li><p style="margin-bottom: 0in">Pick a convenient place for copies
+	of the above repo directories such as your home directory (shorthand
+	is ~ or $HOME) or any other pre-existing directory such as
+	$HOME/edger.</p>
+	<li><p style="margin-bottom: 0in">Change directory to the one you
+	have sellected such as with “cd $HOME”.</p>
+	<li><p style="margin-bottom: 0in">Clone thetools and League
+	repositories with these commands: 
+	</p>
+	<ol>
+		<li><p style="margin-bottom: 0in">git clone
+		http://github.com/TriEmbed/thetools.git</p>
+		<li><p>git clone http://github.com/TriEmbed/League.git</p>
+	</ol>
+</ol>
+<p>Installing:</p>
+<ol>
+	<li><p style="margin-bottom: 0in">Change directory to subdirectory
+	linux of the just cloned directory such as with “cd
+	$HOME/thetools/linux”.</p>
+	<li><p style="margin-bottom: 0in">Type “./installit -help” and
+	study the usage information and help lines for the command. Notice
+	the -targetdir command that takes a fully qualified (i.e. not
+	relative like “..”) pathname to your repos. If your target
+	directory is $HOME/edger then you will have “-targetdir
+	$HOME/edger” as command line arguments to the installit command.
+	Typical command lines look like this if the default user home
+	directory is where everything is to be installed: ./installit
+	&lt;myrouterSSID&gt; &lt;myrouterPASSWORD&gt; -targetdevice ESP32 or
+	this: ./installit &lt;myrouterSSID&gt; &lt;myrouterPASSWORD&gt;
+	-c3board 70.</p>
+	<li><p style="margin-bottom: 0in">The script takes about 10 minutes
+	to run the first time but is faster subsequent times by avoiding new
+	clones of the IDF and its submodules. 
+	</p>
+	<li><p style="margin-bottom: 0in">If the script fails with an error
+	cut and paste the most recent text including the error message and
+	send it to the Signal alphatest group. If you aren’t in this group
+	but would like to be simply send the message to Pete Soper or Rob
+	Mackie to be added. 
+	</p>
+	<li><p style="margin-bottom: 0in">If the script failure is deemed
+	mysterious you may be asked to edit it with a text editor to add a ”
+	-x” to the first line. This enables a very verbose output. Add
+	“&gt;/tmp/log” to the command line running the script and send
+	/tmp/log to the person requesting it.</p>
+	<li><p>If the script runs to completion it will put out a series of
+	instructions for next steps that look like this:</p>
+</ol>
+<ol>
+	<li><p style="margin-bottom: 0in">To use the Espressif IDF in
+	arbitrary places add this line to ~/.bashrc:<br/>
+.
+	$targetdir/esp-idf/export.sh” &gt;/dev/null 2&gt;&amp;1</p>
+	<li><p style="margin-bottom: 0in">To use que_ant and aardvark
+	programs first cd to $targetdir/que_ant and enter ‘idf.py flash’.
+	Then enter ‘idf.py monitor’ and copy the IP address into your
+	clipboard. The IP address is the set of four numbers folowing “sta
+	ip:” in a line that will look something like this:
+	esp_netif_handlers: sta ip: 192.168.12.196, mask: 255.255.255.0, gw:
+	192.168.12.1</p>
+	<li><p style="margin-bottom: 0in">Use cntrl and ‘]’ to break out
+	of monitor when you no longer need it.</p>
+	<li><p style="margin-bottom: 0in">Then use a text edit to change
+	file $targetdir/aardvark/src/api/project.js by replacing
+	192.168.100.150″ on line 63 with the IP in your clipboard.</p>
+	<li><p style="margin-bottom: 0in">Then cd to $targetdir/aardvark and
+	enter ‘npm run build’. The system is now c<br/>
+ompletely built
+	and the above steps do not need to be repeated until a new relea<br/>
+se
+	is used.</p>
+	<li><p style="margin-bottom: 0in">The ESP32 was already started
+	running que_ant with the “idf.py flash”. To start the aarvark
+	application change directory to $targetdir/aardvark and enter ‘npm
+	run serve’.</p>
+	<li><p style="margin-bottom: 0in">Once the aardvark application is
+	ready to use it’s last lines will look like this:<br/>
+App running
+	at: Local: http://localhost:8080</p>
+	<li><p>Now point your browser to http://localhost:8080 and use the
+	images below to navigate through aardvark usage. 
+	</p>
+	<p>NOTE: Depending on the state of the aardvark software it may be
+	necessary to use the three horizontal lines button to drop down the
+	main menu on the left side of the screen. In other cases this menu
+	will already be shown and “stick” to the screen as shown in the
+	images below.</p>
+</ol>
+<p style="margin-bottom: 0in"><a href="https://triembed.org/wp-content/uploads/2022/07/image0.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image0-1024x637.png" name="Image1" align="bottom" width="1024" height="637" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in">After         pointing browser to
+localhost:8080 
+<a href="https://triembed.org/wp-content/uploads/2022/07/image1.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image1.png" name="Image2" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in">After  clicking on the three horizontal
+lines</p>
+<p style="margin-bottom: 0in"> 
+<a href="https://triembed.org/wp-content/uploads/2022/07/image2.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image2.png" name="Image3" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in"> Screen after clicking on the menu drop
+down angle bracket</p>
+<p style="margin-bottom: 0in"><br/>
+
+</p>
+<p style="margin-bottom: 0in"><a href="https://triembed.org/wp-content/uploads/2022/07/image3.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image3.png" name="Image4" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in">After clicking item list</p>
+<p style="margin-bottom: 0in"> 
+<a href="https://triembed.org/wp-content/uploads/2022/07/image4.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image4.png" name="Image5" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in"><br/>
+
+</p>
+<p style="margin-bottom: 0in">After clicking i2cScan</p>
+<p style="margin-bottom: 0in"> 
+<a href="https://triembed.org/wp-content/uploads/2022/07/image5.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image5.png" name="Image6" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in">After clicking test</p>
+<p style="margin-bottom: 0in"><a href="https://triembed.org/wp-content/uploads/2022/07/image6.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image6.png" name="Image7" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+</p>
+<p style="margin-bottom: 0in">After clicking Browse and choosing a
+Renesas/Dialog app file and selecting
+que_league/DialogDesigns/greenpack-test1.aap</p>
+<p style="margin-bottom: 0in"><br/>
+
+</p>
+<p style="margin-bottom: 0in"><br/>
+
+</p>
+<p style="margin-bottom: 0in"> 
+<a href="https://triembed.org/wp-content/uploads/2022/07/image7.png">
+  <font color="#000080">
+    <img src="https://triembed.org/wp-content/uploads/2022/07/image7.png" name="Image8" align="bottom" width="800" height="450" border="1"/>
+  </font>
+</a>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">After app has been
+loading into FPGA memory. The FPGA is now running with its
+configuration</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE eagle SYSTEM "eagle.dtd">
+<eagle version="9.6.2">
+<drawing>
+<settings>
+<setting alwaysvectorfont="no"/>
+<setting verticaltext="up"/>
+</settings>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<layers>
+<layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="2" name="Route2" color="16" fill="1" visible="no" active="yes"/>
+<layer number="15" name="Route15" color="23" fill="1" visible="no" active="yes"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="20" name="Dimension" color="24" fill="1" visible="yes" active="yes"/>
+<layer number="21" name="tPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="22" name="bPlace" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
+<layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
+<layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
+<layer number="32" name="bCream" color="7" fill="5" visible="no" active="yes"/>
+<layer number="33" name="tFinish" color="6" fill="3" visible="no" active="yes"/>
+<layer number="34" name="bFinish" color="6" fill="6" visible="no" active="yes"/>
+<layer number="35" name="tGlue" color="7" fill="4" visible="no" active="yes"/>
+<layer number="36" name="bGlue" color="7" fill="5" visible="no" active="yes"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="yes"/>
+<layer number="39" name="tKeepout" color="4" fill="11" visible="yes" active="yes"/>
+<layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
+<layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
+<layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
+<layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
+<layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
+<layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="88" name="SimResults" color="9" fill="1" visible="yes" active="yes"/>
+<layer number="89" name="SimProbes" color="9" fill="1" visible="yes" active="yes"/>
+<layer number="90" name="Modules" color="5" fill="1" visible="yes" active="yes"/>
+<layer number="91" name="Nets" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="92" name="Busses" color="1" fill="1" visible="yes" active="yes"/>
+<layer number="93" name="Pins" color="2" fill="1" visible="yes" active="yes"/>
+<layer number="94" name="Symbols" color="4" fill="1" visible="yes" active="yes"/>
+<layer number="95" name="Names" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="96" name="Values" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="97" name="Info" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="98" name="Guide" color="6" fill="1" visible="yes" active="yes"/>
+<layer number="101" name="Hidden" color="7" fill="1" visible="yes" active="yes"/>
+</layers>
+<library>
+<description>Upverter Parts Library
+
+Created by Upverter.com</description>
+<packages>
+<package name="SLG47004V-DIP">
+<description>Dialog SLG47004V-DIP Mixed Signal FPGA</description>
+<text x="-12.07" y="5.485" size="1" layer="21" font="vector" ratio="15">&gt;NAME</text>
+<pad name="1" x="-5.08" y="-3.81" drill="1.15" diameter="1.75" shape="square" rot="R180"/>
+<pad name="2" x="-2.54" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="3" x="0" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="4" x="2.54" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="5" x="5.07365" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="6" x="7.62" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="7" x="10.16" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="8" x="12.7" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="9" x="15.24" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="10" x="17.78" y="-3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="11" x="17.78" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="12" x="15.24" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="13" x="12.7" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="14" x="10.16" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="15" x="7.62" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="16" x="5.08" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="17" x="2.54" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="18" x="0" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="19" x="-2.54" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<pad name="20" x="-5.08" y="3.81" drill="1.15" diameter="1.75" rot="R180"/>
+<wire x1="-19.05" y1="5.08" x2="23.495" y2="5.08" width="0.127" layer="21"/>
+<wire x1="23.495" y1="5.08" x2="23.495" y2="-5.08" width="0.127" layer="21"/>
+<wire x1="23.495" y1="-5.08" x2="-19.05" y2="-5.08" width="0.127" layer="21"/>
+<wire x1="-19.05" y1="-5.08" x2="-19.05" y2="5.08" width="0.127" layer="21"/>
+<circle x="-15.24" y="2.54" radius="0.635" width="0.127" layer="21"/>
+<circle x="-12.7" y="2.54" radius="0.635" width="0.127" layer="21"/>
+<circle x="-15.24" y="0" radius="0.635" width="0.127" layer="21"/>
+<circle x="-12.7" y="0" radius="0.635" width="0.127" layer="21"/>
+<circle x="-15.24" y="-2.54" radius="0.635" width="0.127" layer="21"/>
+<circle x="-12.7" y="-2.54" radius="0.635" width="0.127" layer="21"/>
+<text x="-15.875" y="5.08" size="1.27" layer="21" font="vector" ratio="12">GND</text>
+<text x="-15.875" y="-6.35" size="1.27" layer="21" font="vector" ratio="12">VDD</text>
+<text x="-11.43" y="-6.985" size="1.27" layer="21" font="vector" ratio="12">9 RH1B</text>
+<text x="-19.685" y="-0.635" size="1.27" layer="21" font="vector" ratio="12" rot="R90"> RH0A
+V 6</text>
+<circle x="21.59" y="3.81" radius="0.635" width="0.127" layer="21"/>
+<circle x="21.59" y="1.27" radius="0.635" width="0.127" layer="21"/>
+<circle x="21.59" y="-1.27" radius="0.635" width="0.127" layer="21"/>
+<circle x="21.59" y="-3.81" radius="0.635" width="0.127" layer="21"/>
+<text x="23.495" y="0.635" size="1.016" layer="21" font="vector" ratio="12">RH0A
+  7</text>
+<text x="23.495" y="-4.445" size="1.016" layer="21" font="vector" ratio="12">RH0B
+  8</text>
+<text x="-5.08" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">1</text>
+<text x="-2.54" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">21</text>
+<text x="0" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">23</text>
+<text x="2.54" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">9</text>
+<text x="5.08" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">17</text>
+<text x="7.62" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">15</text>
+<text x="10.16" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">5</text>
+<text x="12.7" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">10</text>
+<text x="15.24" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">11</text>
+<text x="17.78" y="-7.62" size="1.016" layer="21" font="vector" ratio="12" rot="R90">3</text>
+<text x="-5.08" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">19</text>
+<text x="-2.54" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">20</text>
+<text x="0" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">22</text>
+<text x="2.54" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">18</text>
+<text x="5.08" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">16</text>
+<text x="7.62" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">12</text>
+<text x="10.16" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">6</text>
+<text x="12.7" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">4</text>
+<text x="15.24" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">24</text>
+<text x="17.78" y="6.35" size="1.016" layer="21" font="vector" ratio="12" rot="R90">2</text>
+<text x="-15.88" y="-8.485" size="1" layer="25">&gt;VALUE</text>
+</package>
+</packages>
+<symbols>
+<symbol name="SLG47004-DIP">
+<description>Dialog SLG47004V-DIP
+Mixed signal FPGA</description>
+<pin name="RH0A(PIN6)" x="22.86" y="-5.08" visible="pin" length="middle" direction="pas" rot="R180"/>
+<pin name="OA0-(PIN3)" x="-22.86" y="-12.7" visible="pin" length="middle" direction="oc"/>
+<pin name="OA1+(PIN23)" x="-22.86" y="5.08" visible="pin" length="middle"/>
+<pin name="RH1B(PIN9)" x="-22.86" y="2.54" visible="pin" length="middle" direction="pas"/>
+<pin name="GPIO(PIN17)" x="-22.86" y="0" visible="pin" length="middle"/>
+<pin name="GPIO(PIN15)" x="-22.86" y="-2.54" visible="pin" length="middle"/>
+<pin name="OA0_OUT(PIN5)" x="-22.86" y="-5.08" visible="pin" length="middle"/>
+<pin name="SCL(PIN10)" x="-22.86" y="-7.62" visible="pin" length="middle"/>
+<pin name="SDA(PIN11)" x="-22.86" y="-10.16" visible="pin" length="middle"/>
+<pin name="GPI(PIN21)" x="-22.86" y="7.62" visible="pin" length="middle" direction="in"/>
+<pin name="GPIO(PIN12)" x="22.86" y="-2.54" visible="pin" length="middle" rot="R180"/>
+<pin name="GPIO(PIN18)" x="22.86" y="2.54" visible="pin" length="middle" direction="in" rot="R180"/>
+<wire x1="-17.78" y1="12.7" x2="-17.78" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="-17.78" y1="-15.24" x2="17.78" y2="-15.24" width="0.254" layer="94"/>
+<wire x1="17.78" y1="-15.24" x2="17.78" y2="12.7" width="0.254" layer="94"/>
+<wire x1="17.78" y1="12.7" x2="-17.78" y2="12.7" width="0.254" layer="94"/>
+<pin name="GPIO(PIN16)" x="22.86" y="0" visible="pin" length="middle" rot="R180"/>
+<pin name="GPIO(PIN19)" x="22.86" y="10.16" visible="pin" length="middle" rot="R180"/>
+<pin name="GPIO(PIN20)" x="22.86" y="7.62" visible="pin" length="middle" rot="R180"/>
+<pin name="VDD(PIN1)" x="-22.86" y="10.16" visible="pin" length="middle" direction="pwr"/>
+<pin name="GND(PIN2)" x="22.86" y="-12.7" visible="pin" length="middle" direction="pwr" rot="R180"/>
+<pin name="OA1_OUT(PIN22)" x="22.86" y="5.08" visible="pin" length="middle" rot="R180"/>
+<pin name="OA0+(PIN4)" x="22.86" y="-7.62" visible="pin" length="middle" rot="R180"/>
+<pin name="OA1-(PIN24)" x="22.86" y="-10.16" visible="pin" length="middle" rot="R180"/>
+<text x="-5.08" y="15.24" size="1.778" layer="94">&gt;NAME</text>
+<text x="-5.08" y="-17.78" size="1.778" layer="94">&gt;VALUE</text>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="SLG47004V_DIP" prefix="FPGA" uservalue="yes">
+<gates>
+<gate name="FPGA1" symbol="SLG47004-DIP" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="SLG47004V-DIP">
+<connects>
+<connect gate="FPGA1" pin="GND(PIN2)" pad="11"/>
+<connect gate="FPGA1" pin="GPI(PIN21)" pad="2"/>
+<connect gate="FPGA1" pin="GPIO(PIN12)" pad="15"/>
+<connect gate="FPGA1" pin="GPIO(PIN15)" pad="6"/>
+<connect gate="FPGA1" pin="GPIO(PIN16)" pad="16"/>
+<connect gate="FPGA1" pin="GPIO(PIN17)" pad="5"/>
+<connect gate="FPGA1" pin="GPIO(PIN18)" pad="17"/>
+<connect gate="FPGA1" pin="GPIO(PIN19)" pad="20"/>
+<connect gate="FPGA1" pin="GPIO(PIN20)" pad="19"/>
+<connect gate="FPGA1" pin="OA0+(PIN4)" pad="13"/>
+<connect gate="FPGA1" pin="OA0-(PIN3)" pad="10"/>
+<connect gate="FPGA1" pin="OA0_OUT(PIN5)" pad="7"/>
+<connect gate="FPGA1" pin="OA1+(PIN23)" pad="3"/>
+<connect gate="FPGA1" pin="OA1-(PIN24)" pad="12"/>
+<connect gate="FPGA1" pin="OA1_OUT(PIN22)" pad="18"/>
+<connect gate="FPGA1" pin="RH0A(PIN6)" pad="14"/>
+<connect gate="FPGA1" pin="RH1B(PIN9)" pad="4"/>
+<connect gate="FPGA1" pin="SCL(PIN10)" pad="8"/>
+<connect gate="FPGA1" pin="SDA(PIN11)" pad="9"/>
+<connect gate="FPGA1" pin="VDD(PIN1)" pad="1"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
+</drawing>
+<compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
+</compatibility>
+</eagle>

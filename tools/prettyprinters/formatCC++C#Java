@@ -1,0 +1,24 @@
+#!/bin/bash
+# Runs astyle with the full set of formatting options aimed at C, C++, C++/CLI, Objective C, C# and Java. A different named script for Python, Lua, Javascript, et al would be welcome (name them explicitly such as 'formatpython').
+
+## Use this before each commit.
+1. What if you cannot run the script? It is likely that astyle is availalbe on all three main operating systems. Contact pete@apexprotofactory.com for help.
+2. What if the script isn't run? It WILL be run with an arbitrary subsequent commit. If unformatted source is likely to be jarring put a warning (e.g. "(unformatted)") in the commit message right after the feature/bug database number. 
+
+## This is a "written once, read and execute only" file that might get refined over time (with ALL source passed through the new versions). See Pete Soper pete@apexprotofactory.com to discuss this file.
+
+astyle \
+	--style=otbs \
+	--indent=spaces=4 \
+	--indent-classes \
+	--indent-namespaces \
+	--convert-tabs \
+	--align-pointer=name \
+	--align-reference=name \
+	--keep-one-line-statements \
+	--pad-header \
+	--pad-oper \
+	-A2 \
+	"$@"
+
+Version 1.0.0 Change the last number for trivial changes such as indentation distance, the middle number for changes that affect people's parsing of code syntax and the first number for a Sea Change requiring new training.
