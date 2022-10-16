@@ -24,6 +24,7 @@ To demonstrate a Renesas ForgeFPGA (formerly Dialog Greenpak formerly Sylogics) 
 13. Supply regulator must not burn finger at max current (finger guard?). Made moot by use of ForgeFPGA regulator circuit (watch the current loop design!)
 14. Settle on power and user LEDs NO: we will not do this as the tesselated module has beaucoup pins 16. Jumper to disable user LED
 15. Dependency on decent 830 position solderless breadboard or else board is "insert only" and inexperienced people will not be able to get board out of breadboard without breaking a trace, breaking the board, bending pins, etc. Recommend Global Specialties or Twin Industries. This is a simple fact of life because of the large number of pins. You get what you pay for. We should be careful about provenance wrt breadboards we source.
+16. Add footprint for ForgeFPGA breakout straddling current linear regulator circuit.
 
 
 ![v0.70 Prototype with FPGA DIP Adapter](/images/v0.70-DIP-adapter.jpg)
