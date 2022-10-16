@@ -5,24 +5,25 @@
 v1.00: Stretch of 0.70
 Requirements:
 
-Purple 1.00 requirements (could somebody restore the bullet numbers please?)
+Purple 1.00 requirements
 
-    To demonstrate a Renesas ForgeFPGA (formerly Dialog Greenpak formerly Sylogics) chip application, the 1.00 purple board will feature an FPGA chip to provide the 3.3v rail for the board, assuming there is no thermal constraint prevenging this. We're 99.99% sure the regulator in the chip (e.g. the nnnnnn) is a switching type (Pete is too busy to look this up).  The QFN package will be on a daughter board that attaches to the purple board via standard 1/10" center male header soldered in. The nnnnnn chip, it's inductor and caps and other passives will be on the daugherboard and this will be manufactured in bulk and made as close to freely available as possible so we can stick to the "can be hand-soldered" big rule as much as possible. an alternative strategy would be to have the component footprints for the current .5A regulator cicuit on the board and just have two schemes for assembly: one for hand-soldering using the linear reg and the other for reflow using the FPGA switching reg.
-    Mini->C USB connector if the support parts for C not onerous. NOTE that the board to host USB connection has to be to >= USB rev X to get more than 500mA (vanilla 3 or greater?)
-    Test points to make hand-soldering USB connector easier (MADE MOOT by the presence of a QFN on the board: very few people can hand solder the board if it has a fine-pitch QFN)
-    Small JTAG connector for use with ESP-PROG or the like P L U S separate USB-micro socket for the USB serial JTAG interface to the C3. It isn't clear yet (and would make a wonderful issue for somebody to research) whether or not there is any advantage to the board having the two flavors of JTAG interface. For more details see here: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/jtag-debugging/index.html
-    Test 0.70 SMD adapter
-    Bring all 20 SMD adapter pins out to male headers
-    Thoroughly test reset and boot circuits with 0.70 + breadboard parts (i.e. partially depopulate and tie bodge wires to male header pins on breadboard)
-    Widen the board for more silkscreen room. Just one row of breadboard positions NO: we will not do this initially 8. Add Digilent Pmod (AMP MODUL MTE) eight position I2C connector. No support for 6/12pos Pmod connectors, only I2C for now.
-    Provide conditioned 5v rail, (4, 8?) channel I2C compatible level shifter. This will further lengthen the board
-    Tesselated C3 module, not the one that fits in a slot. (Still AI-Thinker or Expressif? Dawn?)
-    Power switch between VBUS and rest of board
-    Conditioned VBUS available as 5V source
-    500mA supply for ESP32 or more if its datasheet calls for it as worst case and we have USB C with its higher current support.
-    Supply regulator must not burn finger at max current (finger guard?). Made moot by use of ForgeFPGA regulator circuit (watch the current loop design!)
-    Settle on power and user LEDs NO: we will not do this as the tesselated module has beaucoup pins 16. Jumper to disable user LED
-    Dependency on decent 830 position solderless breadboard or else board is "insert only" and inexperienced people will not be able to get board out of breadboard without breaking a trace, breaking the board, bending pins, etc. Recommend Global Specialties or Twin Industries. This is a simple fact of life because of the large number of pins. You get what you pay for. We should be careful about provenance wrt breadboards we source.
+To demonstrate a Renesas ForgeFPGA (formerly Dialog Greenpak formerly Sylogics) chip application, the 1.00 purple board will feature an FPGA chip to provide the 3.3v rail for the board, assuming there is no thermal constraint prevenging this. The QFN package will be on a daughter board that attaches to the purple board. The LM1117MPX-3.3/NOPB chip, it's inductor and caps and other passives will be on the daugherboard and this will be manufactured in bulk and made as close to freely available as possible so we can stick to the "can be hand-soldered" big rule as much as possible. an alternative strategy would be to have the component footprints for the current .5A regulator cicuit on the board and just have two schemes for assembly: one for hand-soldering using the linear reg and the other for reflow using the FPGA switching reg.
+
+1. Mini->C USB connector if the support parts for C not onerous. NOTE that the board to host USB connection has to be to >= USB rev X to get more than 500mA (vanilla 3 or greater?)
+2. Test points to make hand-soldering USB connector easier (MADE MOOT by the presence of a QFN on the board: very few people can hand solder the board if it has a fine-pitch QFN)
+3. Small JTAG connector for use with ESP-PROG or the like P L U S separate USB-micro socket for the USB serial JTAG interface to the C3. It isn't clear yet (and would make a wonderful issue for somebody to research) whether or not there is any advantage to the board having the two flavors of JTAG interface. For more details see here: https://docs.espressif.com/projects/esp-idf/en/latest/esp32c3/api-guides/jtag-debugging/index.html
+4. Test 0.70 SMD adapter
+5. Bring all 20 SMD adapter pins out to male headers
+6. Thoroughly test reset and boot circuits with 0.70 + breadboard parts (i.e. partially depopulate and tie bodge wires to male header pins on breadboard)
+7. Widen the board for more silkscreen room. Just one row of breadboard positions NO: we will not do this initially 8. Add Digilent Pmod (AMP MODUL MTE) eight position I2C connector. No support for 6/12pos Pmod connectors, only I2C for now.
+8. Provide conditioned 5v rail, (4, 8?) channel I2C compatible level shifter. This will further lengthen the board
+9. Tesselated C3 module, not the one that fits in a slot. (Still AI-Thinker or Expressif? Dawn?)
+10. Power switch between VBUS and rest of board
+11. Conditioned VBUS available as 5V source
+12. 500mA supply for ESP32 or more if its datasheet calls for it as worst case and we have USB C with its higher current support.
+13. Supply regulator must not burn finger at max current (finger guard?). Made moot by use of ForgeFPGA regulator circuit (watch the current loop design!)
+14. Settle on power and user LEDs NO: we will not do this as the tesselated module has beaucoup pins 16. Jumper to disable user LED
+15. Dependency on decent 830 position solderless breadboard or else board is "insert only" and inexperienced people will not be able to get board out of breadboard without breaking a trace, breaking the board, bending pins, etc. Recommend Global Specialties or Twin Industries. This is a simple fact of life because of the large number of pins. You get what you pay for. We should be careful about provenance wrt breadboards we source.
 
 
 ![v0.70 Prototype with FPGA DIP Adapter](/images/v0.70-DIP-adapter.jpg)
