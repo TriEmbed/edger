@@ -8,24 +8,24 @@ The "white board" is an Edger subsystem that can be made with off the shelf part
 6. Jumper wires
 7. Other parts as needed such as additional LEDs
 
-## Version 2.00
-This version is similar to the 1.00 subsystem but with the following changes:
+## Version 2
+This version is similar to the r1 subsystem but with the following changes:
 1. An Espressif ESP32-C3-DEVKITC-02 dev board
 2. An Adafruit mini-USB breakout for serial JTAG
 3. Twin Industries breadboard instead of the crummy boards from Amazon
 
-See the 2.00 directory for details.
+See the r2 directory for details.
 
-## Version 1.00
+## Version 1
 
-![](1.00/white-with-LEDs.jpg)
+![](r1/white-with-LEDs.jpg)
 
 Here is a suitable ESP32 "WROOM" board but beware wimpy 3.3v regulators:
 
 https://smile.amazon.com/gp/product/B08MFCC4SR/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
 
-1.00/esp32pinout.odt is a LibreOffice file with board pinout labels for the WROOM above
-1.00/white-with-LEDs.jpg and 1.00/board-top-view.jpg  show the connections. The label "CONN" on the cheat sheet is in the position of the board's USB micro connector.
+r1/esp32pinout.odt is a LibreOffice file with board pinout labels for the WROOM above
+r1/white-with-LEDs.jpg and r1/board-top-view.jpg  show the connections. The label "CONN" on the cheat sheet is in the position of the board's USB micro connector.
 
 File SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf shows a diagram of the FPGA DIP board. Note well that while "Pin 1 (vcc)" is in position 1 of the 20 position DIP connector most (possibly all) other pins have labels that DO NOT reflect their connector positions. One must look at the actual connector pin position using the red or blue connection line to orient a connection.
 
