@@ -1,22 +1,22 @@
-# "White" Edger development board ('cause solderless breadboards are white)
-The "white board" is an Edger subsystem that can be made with off the shelf parts:
-1. An ESP32 dev board such as the one described below
-2. An SLG47004V-DIP Renesas "FORGEFPGA" mixed signal FPGA on DIP breakout board
+# The "White" Edger development board ('cause solderless breadboards are white)
+The "white board" is an Edger-compatible hardware system that can be made with off the shelf parts. At a minimum:
+1. An ESP32 dev board
+2. A Renesas "FORGEFpga" (formerly Dialog GreenPak) mixed signal FPGA on a DIP board. The project is starting with the SLG47004V-DIP that contains analog amplifiers and programmable variable resistors.
 3. A long (830 point) solderless breadboard
-4. An LED (Vf < 3.3v)
-5. A 1k resistor
-6. Jumper wires
-7. Other parts as needed such as additional LEDs
+4. LEDs (Vf < 3.3v) with 1k current limiting resistors
+5. Jumper wires
+6. USB cable(s) as needed
 
 ## Version 2
-This version is similar to the r1 subsystem but with the following changes:
-1. An Espressif ESP32-C3-DEVKITC-02 dev board
-2. An Adafruit mini-USB breakout for serial JTAG
-3. Twin Industries breadboard instead of the crummy boards from Amazon
+With version 2 the Espressif ESP32-C3-DEVKIT-02 is used because it has the same ESP32 module as the next generation of "Purple Board" will have and it supports serial JTAG debugging. An LED connected to GPIO pin 4 is also present.
 
 See the r2 directory for details.
 
 ## Version 1
+
+The version 1 White Board contains an inexpensive ESP32 dev board such as the one described below. 
+
+See the r1 directory for details.
 
 ![](r1/white-with-LEDs.jpg)
 
