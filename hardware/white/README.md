@@ -1,41 +1,22 @@
-# The "White" Edger development board ('cause solderless breadboards are white)
-The "white board" is an Edger-compatible hardware system that can be made with off the shelf parts. At a minimum:
+# The "White" Edger development board ('cause solderless breadboards are white!)
+The White board is an Edger-compatible hardware system that can be made with off the shelf parts. At a minimum:
 1. An ESP32 dev board
-2. A Renesas "FORGEFpga" (formerly Dialog GreenPak) mixed signal FPGA on a DIP board. The project is starting with the SLG47004V-DIP that contains analog amplifiers and programmable variable resistors.
+2. A Renesas "FORGEFpga" (formerly Dialog GreenPak) mixed signal FPGA on a DIP board. The project is currently focused on the SLG47004V-DIP that contains analog amplifiers and programmable variable resistors as well as logic. See 
 3. A long (830 point) solderless breadboard
 4. LEDs (Vf < 3.3v) with 1k current limiting resistors
 5. Jumper wires
 6. USB cable(s) as needed
 
 ## Version 2
-With version 2 the Espressif ESP32-C3-DEVKIT-02 is used because it has the same ESP32 module as the next generation of "Purple Board" will have and it supports serial JTAG debugging. An LED connected to GPIO pin 4 is also present.
+![](r2/white-board-rev2.jpg)
+The version 2 White board features an Espressif ESP32-C3-DEVKIT-02 that will be used in the next generation "Purple Board". It supports serial JTAG debugging. An LED connected to GPIO pin 4 is also present.
 
-See the r2 directory for details.
+See the r2 subdirectory for details.
 
 ## Version 1
 
-The version 1 White Board contains an inexpensive ESP32 dev board such as the one described below. 
+![](r1/white-board-with-additional-LEDS.jpg)
 
-See the r1 directory for details.
+The version 1 White Board is based on an inexpensive ESP32 dev board avalable from Amazon or other sources.
 
-![](r1/white-with-LEDs.jpg)
-
-Here is a suitable ESP32 "WROOM" board but beware wimpy 3.3v regulators:
-
-https://smile.amazon.com/gp/product/B08MFCC4SR/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
-
-r1/esp32pinout.odt is a LibreOffice file with board pinout labels for the WROOM above
-r1/white-with-LEDs.jpg and r1/board-top-view.jpg  show the connections. The label "CONN" on the cheat sheet is in the position of the board's USB micro connector.
-
-File SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf shows a diagram of the FPGA DIP board. Note well that while "Pin 1 (vcc)" is in position 1 of the 20 position DIP connector most (possibly all) other pins have labels that DO NOT reflect their connector positions. One must look at the actual connector pin position using the red or blue connection line to orient a connection.
-
-Specific wiring details:
-
-1. ESP32 IO19 to FPGA "Pin 10" (SCL)"
-2. ESP32 IO18 to FPGA "Pin 11" (SDA)"
-3. ESP32 GND to FPGA "Pin 2" (GND)"
-4. ESP32 3.3V to FPGA "Pin 1" (VDD)"
-5. FPGA "Pin 15" (GPIO) to FPFA "Pin 16" (GPIO)
-6. FPGA "pin 18" (GPIO) to LED anode
-7. LED anode to 1k resistor
-8. 1k resistor to "pin 2" (GND)
+See the r1 subdirectory for details.
