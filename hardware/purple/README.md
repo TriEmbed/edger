@@ -7,7 +7,7 @@ Requirements:
 
 Purple 1.00 requirements
 
-To demonstrate a Renesas ForgeFPGA (formerly Dialog Greenpak formerly Sylogics) chip application, the 1.00 purple board will feature an FPGA chip to provide the 3.3v rail for the board, assuming there is no thermal constraint prevenging this. The QFN package will be on a daughter board that attaches to the purple board. The LM1117MPX-3.3/NOPB chip, it's inductor and caps and other passives will be on the daugherboard and this will be manufactured in bulk and made as close to freely available as possible so we can stick to the "can be hand-soldered" big rule as much as possible. an alternative strategy would be to have the component footprints for the current .5A regulator cicuit on the board and just have two schemes for assembly: one for hand-soldering using the linear reg and the other for reflow using the FPGA switching reg.
+To demonstrate a Renesas FORGEFpga (formerly Dialog Greenpak formerly Sylogics) chip application, the 1.00 purple board will feature an FPGA chip to provide the 3.3v rail for the board, assuming there is no thermal constraint prevenging this. The QFN package will be on a daughter board that attaches to the purple board. The LM1117MPX-3.3/NOPB chip, it's inductor and caps and other passives will be on the daugherboard and this will be manufactured in bulk and made as close to freely available as possible so we can stick to the "can be hand-soldered" big rule as much as possible. an alternative strategy would be to have the component footprints for the current .5A regulator cicuit on the board and just have two schemes for assembly: one for hand-soldering using the linear reg and the other for reflow using the FPGA switching reg.
 
 1. Mini->C USB connector if the support parts for C not onerous. NOTE that the board to host USB connection has to be to >= USB rev X to get more than 500mA (vanilla 3 or greater?)
 2. Test points to make hand-soldering USB connector easier (MADE MOOT by the presence of a QFN on the board: very few people can hand solder the board if it has a fine-pitch QFN)
@@ -22,11 +22,11 @@ To demonstrate a Renesas ForgeFPGA (formerly Dialog Greenpak formerly Sylogics) 
 10. Power switch between VBUS and rest of board
 11. Conditioned VBUS available as 5V source
 12. 500mA supply for ESP32 or more if its datasheet calls for it as worst case and we have USB C with its higher current support.
-13. Supply regulator must not burn finger at max current (finger guard?). Made moot by use of ForgeFPGA regulator circuit (watch the current loop design!)
+13. Supply regulator must not burn finger at max current (finger guard?). Made moot by use of FORGEFpga regulator circuit (watch the current loop design!)
 14. Settle on power and user LEDs NO: we will not do this as the tesselated module has beaucoup pins
 16. Jumper to disable user LED
 15. Dependency on decent 830 position solderless breadboard or else board is "insert only" and inexperienced people will not be able to get board out of breadboard without breaking a trace, breaking the board, bending pins, etc. Recommend Global Specialties or Twin Industries. This is a simple fact of life because of the large number of pins. You get what you pay for. We should be careful about provenance wrt breadboards we source.
-16. Add footprint for ForgeFPGA breakout straddling current linear regulator circuit.
+16. Add footprint for FORGEFpga breakout straddling current linear regulator circuit.
 
 
 ![v0.70 Prototype with FPGA DIP Adapter](/images/v0.70-DIP-adapter.jpg)
