@@ -7,8 +7,6 @@ The White board is an Edger-compatible hardware system that can be made with off
 5. Jumper wires
 6. USB cable(s) as needed
 
-See [SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf](../purple/doc/contrib/dialog/datasheets/SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf) for FPGA details.
-
 ## Version 2
 ![](r2/white-board-rev2.jpg)
 The version 2 White board features an Espressif ESP32-C3-DEVKIT-02 that will be used in the next generation "Purple Board". It supports serial JTAG debugging. An LED connected to GPIO pin 4 is also present.

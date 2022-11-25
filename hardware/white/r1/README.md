@@ -6,7 +6,7 @@ The version 1 White Board contains an inexpensive ESP32 dev board such as the on
 
 https://smile.amazon.com/gp/product/B08MFCC4SR/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
 
-![esp32pinout.pdf](esp32pinout.pdf) shows the pinout for the board above. See [ForgeFPGA-SLG47004V-DIP.jpg](../doc/contrib/dialog/datasheets/SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf) for FPGA connection details.
+![esp32pinout.pdf](esp32pinout.pdf) shows the pinout for the board above. See [ForgeFPGA-SLG47004V-DIP.jpg](../../doc/contrib/dialog/datasheets/SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf) for FPGA connection details.
 
 Specific wiring details:
 
