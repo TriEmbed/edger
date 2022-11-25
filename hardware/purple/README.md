@@ -1,4 +1,4 @@
-﻿# Triangle Embedded Interest Group (TriEmbed) purple standalone ESP32/FPGA board
+﻿# Edger purple standalone ESP32/FPGA board ('cause OSH Park PCBs are purple)
 ![Repo logo](/images/purple.png)
 ## purple: Making Dialog Semiconductor mixed signal FPGA chips more accessible
 
