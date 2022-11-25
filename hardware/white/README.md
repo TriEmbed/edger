@@ -1,4 +1,4 @@
-# The "White" Edger development board ('cause solderless breadboards are white!)
+# The "White" Edger development board ('cause solderless breadboards are white)
 The White board is an Edger-compatible hardware system that can be made with off the shelf parts. At a minimum:
 1. An ESP32 dev board
 2. A Renesas "FORGEFpga" (formerly Dialog GreenPak) mixed signal FPGA on a DIP board. The project is currently focused on the SLG47004V-DIP that contains analog amplifiers and programmable variable resistors as well as logic. See 
@@ -6,6 +6,8 @@ The White board is an Edger-compatible hardware system that can be made with off
 4. LEDs (Vf < 3.3v) with 1k current limiting resistors
 5. Jumper wires
 6. USB cable(s) as needed
+
+See [SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf](../purple/doc/contrib/dialog/datasheets/SLG47004V_DIP_Proto_Board_Quick_Start_Guide.pdf) for FPGA details.
 
 ## Version 2
 ![](r2/white-board-rev2.jpg)
