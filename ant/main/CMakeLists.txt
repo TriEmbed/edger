@@ -1,0 +1,20 @@
+idf_component_register(SRCS "esp_rest_main.c"
+        "rest_server.c"
+        "buildMenu.c"
+        "configuration/system_info.c"
+        "configuration/configuration.c"
+        "utilities.c"
+        "i2c/i2c.c"
+        "i2c/i2cDriver.c"
+        "SPI/spi.c"
+        "SPI/spiDriver.c"
+        "ANALOG/analog.c"
+        "ANALOG/analogDriver.c"
+        "BLE/BLE.c"
+        "BLE/BLEDriver.c"
+        "gpio/gpio.c"
+        "gpio/gpioDriver.c"
+        "console/console_example_main.c"
+        INCLUDE_DIRS ".")
+
+

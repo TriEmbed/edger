@@ -1,0 +1,13 @@
+// @import '~vuetify/src/styles/main.sass';
+
+html {
+  overflow-y: auto;
+}
+
+.fill-width {
+  width: 100%;
+}
+
+.text-no-wrap {
+  white-space: nowrap !important;
+}
