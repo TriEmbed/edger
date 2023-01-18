@@ -1,0 +1,14 @@
+#!/bin/bash
+touch /tmp/log2
+export PATH="$PATH:$HOME/.local/share/pnpm"
+NVM_INC=/$HOME/.nvm/versions/node/v14.21.1/include/node
+NVM_DIR=/$HOME/.nvm
+NVM_BIN=/$HOME/.nvm/versions/node/v14.21.1/bin
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PNPM_HOME="/$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+
+cd $HOME/workspace/esp32/edger/aardvark
+
+pnpm run serve

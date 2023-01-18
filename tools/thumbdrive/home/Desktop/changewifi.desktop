@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=true
+Exec=/home/edger/bin/changewifi
+Name=CHANGE WIFI
+Icon=/home/edger/Pictures/chevron_yellowgold.jpg

@@ -1,0 +1,54 @@
+#!/bin/bash
+touch /tmp/log1
+loop () {
+  while [ /bin/true ] ; do
+    sleep 1
+  done
+}
+echo "Changing WIFI SSID and PASSWORD for Edger"
+echo "If you want to bail out of this script *before the Ant rebuild starts* type control and C together."
+echo
+echo "Be sure to have your dev board plugged in"
+echo
+ssid=`grep CONFIG_EXAMPLE_WIFI_SSID $HOME/workspace/esp32/edger/ant/sdkconfig | sed -e's@.*=\"\(.*\)\"@\1@'`
+pswd=`grep CONFIG_EXAMPLE_WIFI_PASSWORD $HOME/workspace/esp32/edger/ant/sdkconfig | sed -e's@.*=\"\(.*\)\"@\1@'`
+echo "Your WIFI SSID is currently set to $ssid"
+echo "Your WIFI password is currently set to $pswd"
+echo
+echo -n "Do you want to change this? (y or n)"
+read ans
+while [ "$ans " = "y " ] ; do
+  echo "enter a new SSID and then type enter"
+  read ssid
+  echo "enter a new password and then type enter"
+  read pswd
+
+  echo "new SSID: $ssid new password: $pswd"
+  echo -n "Do you want to change it again? (y to reenter, n to continue)"
+  read ans
+done
+sed -e"s/CONFIG_EXAMPLE_WIFI_SSID.*/CONFIG_EXAMPLE_WIFI_SSID=\"$ssid\"/" <$HOME/workspace/esp32/edger/ant/sdkconfig >/tmp/sdk
+sed -e"s/CONFIG_EXAMPLE_WIFI_PASSWORD.*/CONFIG_EXAMPLE_WIFI_PASSWORD=\"$pswd\"/" </tmp/sdk >$HOME/workspace/esp32/edger/ant/sdkconfig
+
+echo "Rebuilding Ant. This takes a few minutes. Build details are captured in /tmp/log."
+
+cd $HOME/workspace/esp32/edger/ant
+rm -rf build
+. $HOME/esp/esp-idf/export.sh
+if [ $? -ne 0 ] ; then
+  echo "esp-idf export failed"
+  exit 1
+fi
+idf.py build >/tmp/log 2>&1
+if [ $? -ne 0 ] ; then
+  echo "build failed: details in /tmp/log"
+  exit 1
+fi
+idf.py flash >/tmp/log 2>&1
+if [ $? -ne 0 ] ; then
+  echo "flash failed: details in /tmp/log"
+  exit 1
+fi
+echo "All done. You can now start Aardvark and then the web browser"
+echo "type enter to continue"
+read ans
