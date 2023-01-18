@@ -55,7 +55,8 @@ initialise_mdns (void)
 esp_err_t
 init_fs (void)
 {
-  esp_err_t ret = esp_vfs_semihost_register (CONFIG_EXAMPLE_WEB_MOUNT_POINT);
+  esp_err_t ret = esp_vfs_semihost_register (CONFIG_EXAMPLE_WEB_MOUNT_POINT,
+					      CONFIG_EXAMPLE_HOST_PATH_TO_MOUNT);
   if (ret != ESP_OK)
     {
       ESP_LOGE (TAG, "Failed to register semihost driver (%s)!",
