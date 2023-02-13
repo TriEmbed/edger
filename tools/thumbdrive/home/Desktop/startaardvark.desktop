@@ -2,6 +2,6 @@
 Version=1.0
 Type=Application
 Terminal=true
-Exec=/home/edger/bin/startaardvark
+Exec=$HOME/bin/startaardvark
 Name=START AARDVARK
-Icon=/home/edger/Pictures/chevron_yellowgold.jpg
+Icon=$HOME/Pictures/chevron_yellowgold.jpg

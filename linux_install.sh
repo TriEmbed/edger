@@ -1,9 +1,40 @@
-#!/bin/bash
+#!/bin/bash -x
 # Hack Edger onto a Linux system. Currently just handles Ubuntu.
 
 # Here is an important todo: This script needs to detect changes to the edger repo and rebuild ant and aardvark as needed
 
 # The Espressif docs have the recipes for package installs for other Linux flavors
+
+# Fetch the Edger repo
+
+if [ ! -d $HOME/workspace/esp32/edger ] ; then
+  mkdir -p workspace workspace/esp32
+  echo "====="
+  echo "Fetch edger repo"
+  echo "====="
+  cd $HOME/workspace/esp32
+  git clone https://github.com/TriEmbed/edger.git
+fi
+
+
+# Create other target directories and copy in icon and script files
+
+if [ ! -d $HOME/esp ] ; then
+  echo "====="
+  echo "Set up remaining directory dirs and special files"
+  echo "====="
+  cd $HOME
+  mkdir -p bin esp
+  cd $HOME
+  cp -r $HOME/workspace/esp32/edger/tools/thumbdrive/home/bin .
+  chmod 755 $HOME/bin/changewifi $HOME/bin/startaardvark
+  echo " >>>>> $HOME <<<<< "
+  sed -e"s@\$HOME@$HOME@" <$HOME/workspace/esp32/edger/tools/thumbdrive/home/Desktop/changewifi.desktop >$HOME/Desktop/changewifi.desktop
+  sed -e"s@\$HOME@$HOME@" <$HOME/workspace/esp32/edger/tools/thumbdrive/home/Desktop/startaardvark.desktop >$HOME/Desktop/startaardvark.desktop
+  sed -e"s@\$HOME@$HOME@" <$HOME/workspace/esp32/edger/tools/thumbdrive/home/Desktop/startbrowser.desktop >$HOME/Desktop/startbrowser.desktop
+fi
+exit 0
+
 
 echo "====="
 echo $PATH $HOME/.bashrc | grep "$USER/bin"
@@ -30,8 +61,6 @@ echo "====="
 echo "Adding desktop icons and scripts to $HOME"
 echo "====="
 
-cd $HOME
-cp -r $HOME/workspace/esp32/edger/tools/thumbdrive/home/* .
 if [ ! -d $HOME/esp/esp-idf ] ; then
   echo "====="
   echo "Fetch the Espressif IDF"
@@ -45,22 +74,6 @@ echo "Install the prerequsite packages"
 echo "====="
 
 sudo apt-get install -y git wget flex bison gperf python3 python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 python3-pip curl
-# Fetch the Edger repo
-if [ ! -d $HOME/workspace/esp32/edger ] ; then
-  echo "====="
-  echo "Fetch edger repo"
-  echo "====="
-  cd $HOME/workspace/esp32
-  git clone https://github.com/TriEmbed/edger.git
-fi
-
-if [ ! -d $HOME/workspace ] ; then
-  echo "====="
-  echo "Set up the home directory"
-  echo "====="
-  cd $HOME
-  mkdir -p bin workspace workspace/esp32 esp
-fi
 
 if [ ! -d $HOME/.nvm ] ; then
   echo "====="

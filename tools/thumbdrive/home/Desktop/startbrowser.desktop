@@ -4,4 +4,4 @@ Type=Application
 Terminal=false
 Exec=firefox http://localhost:8080
 Name=START BROWSER
-Icon=/home/edger/Pictures/chevron_yellowgold.jpg
+Icon=$HOME/Pictures/chevron_yellowgold.jpg
