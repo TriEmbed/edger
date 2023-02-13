@@ -5,6 +5,13 @@
 
 # The Espressif docs have the recipes for package installs for other Linux flavors
 
+echo "====="
+echo "Install the prerequsite packages"
+echo "====="
+
+sudo apt-get install -y git wget flex bison gperf python3 python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 python3-pip curl
+
+
 # Fetch the Edger repo
 
 if [ ! -d $HOME/workspace/esp32/edger ] ; then
@@ -67,12 +74,6 @@ if [ ! -d $HOME/esp/esp-idf ] ; then
   cd $HOME/esp
   git clone -b v4.4 --recursive https://github.com/espressif/esp-idf.git
 fi
-
-echo "====="
-echo "Install the prerequsite packages"
-echo "====="
-
-sudo apt-get install -y git wget flex bison gperf python3 python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 python3-pip curl
 
 if [ ! -d $HOME/.nvm ] ; then
   echo "====="
