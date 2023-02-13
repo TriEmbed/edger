@@ -33,7 +33,6 @@ if [ ! -d $HOME/esp ] ; then
   sed -e"s@\$HOME@$HOME@" <$HOME/workspace/esp32/edger/tools/thumbdrive/home/Desktop/startaardvark.desktop >$HOME/Desktop/startaardvark.desktop
   sed -e"s@\$HOME@$HOME@" <$HOME/workspace/esp32/edger/tools/thumbdrive/home/Desktop/startbrowser.desktop >$HOME/Desktop/startbrowser.desktop
 fi
-exit 0
 
 
 echo "====="
