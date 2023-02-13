@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash 
 # Hack Edger onto a Linux system. Currently just handles Ubuntu.
 
 # Here is an important todo: This script needs to detect changes to the edger repo and rebuild ant and aardvark as needed
@@ -49,7 +49,7 @@ echo "====="
 if [ $? -ne 0 ] ; then
   echo '$HOME/bin is not in your search rules in .bashrc: adding PATH=\"$PATH:$HOME/bin'
   echo 'export PATH="$PATH:$HOME/bin' >>$HOME/.bashrc
-  echo "run this script again with a fresh terminal session"
+  echo "run this script again"
   exit 0
 fi
 
@@ -84,8 +84,22 @@ if [ ! -d $HOME/.nvm ] ; then
   export NVM_DIR=$HOME/.nvm
   . $NVM_DIR/nvm.sh
   nvm install 14
+  if [ $? -ne 0 ] ; then
+    echo "fatal error: nvm/npm install failed"
+    echo "type return to continue"
+    exit 1
+  fi
   npm add -g @pnpm/exe
+  if [ $? -ne 0 ] ; then
+    echo "fatal error: pnpm install failed"
+    echo "type return to continue"
+    exit 1
+  fi
 fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Aardvark is currently prepared from scratch every time so it picks up 
 # changes to the repo. This could be made smarter by comparing the git log
@@ -96,7 +110,19 @@ echo "====="
 echo "Build aardvark"
 echo "====="
 pnpm install
+if [ $? -ne 0 ] ; then
+  echo "pnpm install failed"
+  echo "type enter to continue"
+  read ans
+  exit 1
+fi
 pnpm run build
+if [ $? -ne 0 ] ; then
+  echo "pnpm build failed"
+  echo "type enter to continue"
+  read ans
+  exit 1
+fi
 # install the IDF
 cd $HOME/esp/esp-idf
 if [ ! -d $HOME/.espressif ] ; then

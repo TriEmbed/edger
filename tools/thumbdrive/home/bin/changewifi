@@ -1,5 +1,4 @@
 #!/bin/bash
-touch /tmp/log1
 loop () {
   while [ /bin/true ] ; do
     sleep 1
@@ -30,8 +29,6 @@ done
 sed -e"s/CONFIG_EXAMPLE_WIFI_SSID.*/CONFIG_EXAMPLE_WIFI_SSID=\"$ssid\"/" <$HOME/workspace/esp32/edger/ant/sdkconfig >/tmp/sdk
 sed -e"s/CONFIG_EXAMPLE_WIFI_PASSWORD.*/CONFIG_EXAMPLE_WIFI_PASSWORD=\"$pswd\"/" </tmp/sdk >$HOME/workspace/esp32/edger/ant/sdkconfig
 
-echo "Rebuilding Ant. This takes a few minutes. Build details are captured in /tmp/log."
-
 cd $HOME/workspace/esp32/edger/ant
 rm -rf build
 . $HOME/esp/esp-idf/export.sh
@@ -39,16 +36,27 @@ if [ $? -ne 0 ] ; then
   echo "esp-idf export failed"
   exit 1
 fi
+
+echo "Rebuilding Ant. This takes a few minutes. Build details are captured in /tmp/log."
+
 idf.py build >/tmp/log 2>&1
 if [ $? -ne 0 ] ; then
-  echo "build failed: details in /tmp/log"
+  echo "Fatal error: build failed: details in /tmp/log"
+  echo "type enter to continue"
+  read ans
   exit 1
 fi
+
+echo "Flashing Ant. This takes a few seconds. Details are captured in /tmp/log."
+
 idf.py flash >/tmp/log 2>&1
 if [ $? -ne 0 ] ; then
-  echo "flash failed: details in /tmp/log"
+  echo "Fatal error: flash failed: details in /tmp/log"
+  echo "type enter to continue"
+  read ans
   exit 1
 fi
+
 echo "All done. You can now start Aardvark and then the web browser"
 echo "type enter to continue"
 read ans
