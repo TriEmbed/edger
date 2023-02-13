@@ -49,7 +49,7 @@ echo "====="
 if [ $? -ne 0 ] ; then
   echo '$HOME/bin is not in your search rules in .bashrc: adding PATH=\"$PATH:$HOME/bin'
   echo 'export PATH="$PATH:$HOME/bin' >>$HOME/.bashrc
-  echo "run this script again"
+  echo "run this script again with a fresh terminal session"
   exit 0
 fi
 
