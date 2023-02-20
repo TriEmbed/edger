@@ -1,0 +1,270 @@
+#!/bin/bash 
+
+# Read temperatures from a BMP085/BMP180 sensor connected to the I2C bus of a 
+# rev 1 or rev 2 Edger development "white board" and display in fahrenheit 
+# every $WAIT_TIME seconds (delay can be changed below).
+
+# Currently tested with an Ubuntu 20.04.04 laptop and a rev 2 "white" dev
+# board. Additional testing needed, especially for a rev 1 board.
+
+# This code is carefully crafted to cause some coders to flee to Python.
+# Seriously, Python has the libraries to deal with HTTP patch without
+# gymnastics like this code uses, not to mention the weird arithmetic via
+# awk, the integer type casting via ancient scrolls of twos complement, etc.
+
+# LIMITATIONS
+# 1) The networking code in the ESP32 is brittle and doesn't tolerate the
+#    USB plug being pulled out and put back in rapidly. This can cause 
+#    curl errors and it has been seen to cause the system to hang so nothing
+#    comes out after the program name. 
+# BUGS
+# 1) Using control C to terminate the script can cause files to remain in
+#   /tmp. A trap handler will be added to prevent this. This is issue #7 in
+#   the edger repo.
+
+# pete@soper.us Feb 18, 2023 Creative Commons CC0 1.0 Universal license
+
+# Coding conventions: 
+#  Constants are all upper case with underscore word delimiters.
+#  Variable and parameter names are lower case with underscore word delimeters.
+#  Functions names use camelCase.
+
+###### Start user customization section
+# Seconds between temp displays
+
+WAIT_TIME=5
+###### End ordinary customization section
+
+# Sensor configuration. These values are BMP085/180 specific.
+
+# To customize this for a different sensor the sensor's datasheet or an 
+# existing example of drive code has to be consulted to determine the I2C
+# register set and the semantics of interaction with the device. These details
+# will determine the pattern of HTTP set and get operations (done as a "patch")
+# to accomodate the specific application or prototype/demo functionality.
+
+# The Sensor I2C addresses
+
+# The I2C address of the sensor
+
+BMP_I2C_ADDR=119          # 0x77
+
+# Sensor register addresses/offsets
+
+CAL_AC5_REG=178           # 0xB2
+CAL_AC6_REG=180           # 0xB4
+CAL_MC_REG=188            # 0xBC
+CAL_MD_REG=190            # 0xBE
+BMP_CONTROL=244           # 0xF4
+BMP_TEMP_DATA=246         # 0xF6
+BMP_PRESSUREDATA0=246     # 0xF6
+BMP_PRESSUREDATA1=247     # 0xF7
+BMP_PRESSUREDATA2=248     # 0xF8
+
+# Sensor commands
+
+BMP_READ_TEMP=46          # 0x2E
+BMP_READ_PRESSURE=52      # 0x34
+
+# Fatal error handler. If the first arg $1 is numeric it is a process exit 
+# status from curl or the script and this may give more details about what 
+# went wrong. It puts out any other arguments to the terminal and 
+# terminates the shell process running the script with an abnormal exit value.
+# Exit status values starting at 200 indicate errors in this script that 
+# should be reported with an issue. Those at or below 92 come from curl.
+
+fatal() { 
+    # Put out any other info parameters first
+    if [ $# -gt 1 ] ; then
+      echo $2
+    fi
+
+  case $1 in
+    6 ) msg="This usually means the dev board is not plugged in,"
+	msg="$msg the WIFI parameters are wrong or the WIFI is not"
+	msg="$msg working, or the dev board build/flash failed to"
+	msg="$msg prepare the board with the right firmware (i.e. plain"
+	msg="$msg esp32 or C3 esp32, etc). Additional clues might be" 
+	msg="$msg found by running 'idf.py monitor'."
+	shift
+	;;
+    7 ) msg="This can  be caused by unplugging and plugging the USB"
+	msg="$msg connector in and putting the WIFI into a bad state."
+	shift
+	;;
+    # Additional tea leaves for curl codes go here as they are seen. They
+    # currently go up to 92.
+    200)msg="This is a development error. File an issue."
+	shift
+	;;
+    130)msg="Script stopped with control-C. This doesn't come out reliably."
+	msg="$msg See the instructions below for testing for this if it"
+	msg="$msg would be useful. Termination with control-C may also"
+	msg="$msg leak files in /tmp named curl.<process id #>. If this"
+	msg="$msg gets to be a problem a trap handler can"
+	msg="$msg fix it."
+	shift
+	;;
+    *)  msg="Undefined exit code $status. See curl output and its man page."
+	shift
+	;;
+  esac
+
+  echo $msg
+
+  # This exit call immediately stops the script execution with an exit 
+  # value that can be tested by a containing script like this:
+  # edgerBMP
+  # status=$?
+  # if [ $status -ne 0 ] ;then
+  #   echo "something bad happened as edgerBMP exited with: $status"
+  # fi
+  exit $exitstatus
+}
+
+# Do a set within an HTTP Patch request to the Edger Ant I2C endpoint URL. In
+# this application the I2C address is parameter $1, the register address is $2
+# and the sensor command byte is $3.
+
+patchSetByte() {
+  if [ $# -ne 3 ] ; then
+    fatal 200 "patchSetByte expected three arguments, got: $@"
+  fi
+
+  # Send the byte to the I2C peripheral using an HTTP request over WIFI to Ant
+
+  curl --no-progress-meter --location -g --request PATCH \
+  "http://esp-home.local/api/v1/i2c?set={\"address\":$1,\"index\":$2,\"length\":1,\"data\":[$3]}"\
+   --header 'Content-TType: text/plain' --data-raw 'asdasd' >/tmp/tmp.$$
+  status=$?
+  rm /tmp/tmp.$$
+  if [ $status -ne 0 ] ; then
+    fatal $status
+  fi
+}
+
+# Do a get within an HTTP Patch to the Edger Ant I2C endpoint URL. In this 
+# application the I2C # address is parameter $1, the register address is $2
+# an expected return length of two bytes is hard-wired.
+# Notice the bytes are in big endian order. The curl value is returned via
+# global/reference parameter $3.
+
+patchGetUnsignedShort() {
+  if [ $# -ne 3 ] ; then
+    fatal 200 "patchGetUnsignedShort expected three arguments"
+  fi
+
+  # Fetch two bytes from the I2C peripheral using an HTTP request 
+  # over WIFI to the Ant firmware in the dev system
+
+  curl --no-progress-meter --location -g --request PATCH \
+  "http://esp-home.local/api/v1/i2c?get={\"address\":$1,\"index\":$2,\"length\":2}"\
+   --header 'Content-Type: text/plain' --data-raw 'asdasd' >/tmp/curl.$$
+
+  status=$?
+
+  if [ $status -ne 0 ] ; then
+    fatal $status
+  fi
+
+  # Extract the two byte values and form an unsigned integer with them
+
+  grep get /tmp/curl.$$ | sed -e's@.*\[@@' | sed -e's@\].*@@' >/tmp/tmp.$$
+  rm /tmp/curl.$$
+
+  high=`cut -d"," -f1 /tmp/tmp.$$`
+  low=`cut -d"," -f2 /tmp/tmp.$$`
+  rm /tmp/tmp.$$
+
+  # This is voodoo for effectively converting the name of the arg passed in
+  # as $3 from a call by name parameter to a call by reference parameter. It 
+  # actually converts the actual parameter name into a global variable the 
+  # caller can reference and thus avoid running the function as a sub shell 
+  # that completely fouls up the ability to do echos and exit the script 
+  # abruptly. It took me many hours to figure this out. The chatGPT was
+  # less than worthless for this, as were many Stack Exchange entries. After
+  # a lot of digging I spotted an example of declare -g usage that made the
+  # light go on. All explanations of declare -g found stunk.
+
+  declare -g $3=$(awk "BEGIN{print $high * 256 + $low}")
+}
+
+# Convert an unsigned short integer value in parameter $1 to a signed integer 
+# value. The high order bit (bit 15) is tested by seeing if the unsigned value 
+# is greater than the largest possible positive value. If it is set then 
+# arithmetic is used to convert to a twos complement negative value. The
+# computed value is returned via global/reference parameter $2.
+
+unsignedShortToShort() {
+  if [ $# -ne 2 ] ; then
+    fatal 200 "unsignedShortToShort expected two argument$"
+    exit 1
+  fi
+
+  if [ $1 -ge 32768 ] ; then
+    declare -g $2=$(awk "BEGIN{print (65536 - $1) * -1}")
+  else
+    declare -g $2=$1
+  fi
+}
+
+# Do a get within an HTTP Patch to the Edger Ant I2C endpoint URL with I2C 
+# address $1, register address $2 and received length 2. The received unsigned
+# short is converted from unsigned to signed by unsignedShortToShort and
+# returned via reference/global parameter $3. 
+
+getSignedShort() {
+  if [ $# -ne 3 ] ; then
+    fatal 200 "unsignedShortToShort expected three arguments"
+  fi
+  patchGetUnsignedShort $1 $2 val1
+  unsignedShortToShort $val1 val2
+  declare -g $3=$val2
+}
+
+# Main code
+
+# Fetch the sensor calibration register values
+
+patchGetUnsignedShort $BMP_I2C_ADDR $CAL_AC5_REG return
+AC5=$return
+
+patchGetUnsignedShort $BMP_I2C_ADDR $CAL_AC6_REG return
+AC6=$return
+
+getSignedShort $BMP_I2C_ADDR $CAL_MC_REG return
+MC=$return
+
+getSignedShort $BMP_I2C_ADDR $CAL_MD_REG return
+MD=$return
+
+# Endless loop
+
+while [ 1 -eq 1 ] ; do
+
+  # Request the temperature
+
+  patchSetByte $BMP_I2C_ADDR $BMP_CONTROL $BMP_READ_TEMP
+
+  # Fetch the raw temp as an unsigned short.
+
+  patchGetUnsignedShort $BMP_I2C_ADDR $BMP_TEMP_DATA return
+  UT=$return
+
+  # Adjust with calibration values. See the BMP085 or 180 datasheet for details.
+  # The cal and other var names and arithmetic operations are right out of the 
+  # datasheet.
+
+  X1=$(awk "BEGIN{print (($UT - $AC6) * $AC5) / 32768}")
+  X2=$(awk "BEGIN{print int(($MC * 2048) / ($X1 + $MD))}")
+  B5=$(awk "BEGIN{print (($X1 + $X2) + 8) / 16}")
+
+  # Show fahrenheit degrees. Don't bother showing a fraction.
+
+  fahrenheit=$(awk "BEGIN{printf \"%d\",int(($B5 / 10.0) * 1.8 + 32.0)}")
+  echo $fahrenheit
+
+  # sleep for a while
+
+  sleep $WAIT_TIME
+done
