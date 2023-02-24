@@ -17,10 +17,6 @@
 #    USB plug being pulled out and put back in rapidly. This can cause 
 #    curl errors and it has been seen to cause the system to hang so nothing
 #    comes out after the program name. 
-# BUGS
-# 1) Using control C to terminate the script can cause files to remain in
-#   /tmp. A trap handler will be added to prevent this. This is issue #7 in
-#   the edger repo.
 
 # pete@soper.us Feb 18, 2023 Creative Commons CC0 1.0 Universal license
 
@@ -65,6 +61,17 @@ BMP_PRESSUREDATA2=248     # 0xF8
 
 BMP_READ_TEMP=46          # 0x2E
 BMP_READ_PRESSURE=52      # 0x34
+
+# Define a trap handler for catching process interrupts via control-C
+
+trap controlC INT
+
+# Handle a keyboard control-C for stopping script execution
+
+controlC() {
+  rm -f /tmp/{tmp,curl}.$$
+  exit 0
+}
 
 # Fatal error handler. If the first arg $1 is numeric it is a process exit 
 # status from curl or the script and this may give more details about what 
