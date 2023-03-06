@@ -1,22 +1,34 @@
 #!/bin/bash 
 
-# Read temperatures from a BMP085/BMP180 sensor connected to the I2C bus of a 
-# rev 1 or rev 2 Edger development "white board" and display in fahrenheit 
-# every $WAIT_TIME seconds (delay can be changed below).
+# Read the temperature from a BMP085/BMP180 sensor connected to the I2C bus of 
+# an Edger development board via its HTTP endpoint for I2C bus access and
+# display it as fahrenheit every $WAIT_TIME seconds (delay can be changed 
+# below). The Edger dev board only needs power: it can be powered via a USB
+# connection for convenience: it is not dependent on any communication with
+# the PC (that is handled via WIFI).
 
-# Currently tested with an Ubuntu 20.04.04 laptop and a rev 2 "white" dev
-# board. Additional testing needed, especially for a rev 1 board.
+# Tested with an Ubuntu 20.04.04 laptop and a rev 2 "white" dev board. NOTE
+# that the dev board has to be set up for shared WIFI connection to the PC.
 
 # This code is carefully crafted to cause some coders to flee to Python.
 # Seriously, Python has the libraries to deal with HTTP patch without
 # gymnastics like this code uses, not to mention the weird arithmetic via
-# awk, the integer type casting via ancient scrolls of twos complement, etc.
+# awk, the integer type casting via ancient scrolls of twos complement
+# behavior, etc.
+
+# TheBMP180/085 turned out to be a poor choice, as it is no longer made.
+# Worse, the 180 example used with this code appears to be defective with
+# respect to pressure measurements. The BMP388 is a relatively recent design
+# and an example will be made for this chip, either in Bash or Python.
 
 # LIMITATIONS
-# 1) The networking code in the ESP32 is brittle and doesn't tolerate the
-#    USB plug being pulled out and put back in rapidly. This can cause 
-#    curl errors and it has been seen to cause the system to hang so nothing
-#    comes out after the program name. 
+# 1) The URLs are hardwired to reference the first dev board by default. To 
+#    work around this pass a specific dev board name in as an argument to the 
+#    command (e.g. "edgerBMP esp-home2").
+# 2) The networking code in the ESP32 is brittle and doesn't tolerate abrupt
+#    power cycles. They can cause curl errors and have been seen to cause the 
+#    system to hang so nothing comes out after. The workaround is to follow 
+#    the advice of the IT Crowd and "turn it off and back one again".
 
 # pete@soper.us Feb 18, 2023 Creative Commons CC0 1.0 Universal license
 
@@ -31,6 +43,14 @@
 WAIT_TIME=5
 ###### End ordinary customization section
 
+# Check for an alternate name from the command line
+
+if [ $# -gt 0 ] ; then
+  host="$1"
+else
+  host="esp-home"
+fi
+
 # Sensor configuration. These values are BMP085/180 specific.
 
 # To customize this for a different sensor the sensor's datasheet or an 
@@ -41,11 +61,11 @@ WAIT_TIME=5
 
 # The Sensor I2C addresses
 
-# The I2C address of the sensor
+# The default I2C address of the sensor
 
 BMP_I2C_ADDR=119          # 0x77
 
-# Sensor register addresses/offsets
+# Sensor register addresses/offsets relevant to temperature
 
 CAL_AC5_REG=178           # 0xB2
 CAL_AC6_REG=180           # 0xB4
@@ -53,14 +73,10 @@ CAL_MC_REG=188            # 0xBC
 CAL_MD_REG=190            # 0xBE
 BMP_CONTROL=244           # 0xF4
 BMP_TEMP_DATA=246         # 0xF6
-BMP_PRESSUREDATA0=246     # 0xF6
-BMP_PRESSUREDATA1=247     # 0xF7
-BMP_PRESSUREDATA2=248     # 0xF8
 
 # Sensor commands
 
 BMP_READ_TEMP=46          # 0x2E
-BMP_READ_PRESSURE=52      # 0x34
 
 # Define a trap handler for catching process interrupts via control-C
 
@@ -141,7 +157,7 @@ patchSetByte() {
   # Send the byte to the I2C peripheral using an HTTP request over WIFI to Ant
 
   curl --no-progress-meter --location -g --request PATCH \
-  "http://esp-home.local/api/v1/i2c?set={\"address\":$1,\"index\":$2,\"length\":1,\"data\":[$3]}"\
+  "http://$host.local/api/v1/i2c?set={\"address\":$1,\"index\":$2,\"length\":1,\"data\":[$3]}"\
    --header 'Content-TType: text/plain' --data-raw 'asdasd' >/tmp/tmp.$$
   status=$?
   rm /tmp/tmp.$$
@@ -165,7 +181,7 @@ patchGetUnsignedShort() {
   # over WIFI to the Ant firmware in the dev system
 
   curl --no-progress-meter --location -g --request PATCH \
-  "http://esp-home.local/api/v1/i2c?get={\"address\":$1,\"index\":$2,\"length\":2}"\
+  "http://$host.local/api/v1/i2c?get={\"address\":$1,\"index\":$2,\"length\":2}"\
    --header 'Content-Type: text/plain' --data-raw 'asdasd' >/tmp/curl.$$
 
   status=$?
@@ -183,15 +199,18 @@ patchGetUnsignedShort() {
   low=`cut -d"," -f2 /tmp/tmp.$$`
   rm /tmp/tmp.$$
 
-  # This is voodoo for effectively converting the name of the arg passed in
-  # as $3 from a call by name parameter to a call by reference parameter. It 
-  # actually converts the actual parameter name into a global variable the 
-  # caller can reference and thus avoid running the function as a sub shell 
-  # that completely fouls up the ability to do echos and exit the script 
-  # abruptly. It took me many hours to figure this out. The chatGPT was
-  # less than worthless for this, as were many Stack Exchange entries. After
-  # a lot of digging I spotted an example of declare -g usage that made the
-  # light go on. All explanations of declare -g found stunk.
+  # The declare -g effectively converts the actual parameter name of the arg 
+  # passed in as $3 from call by name to call by reference. It actually 
+  # converts the parameter into a global variable so it's value change here
+  # becomes visible to the caller.
+
+  # It took me many hours to figure this out. The chatGPT was less than 
+  # worthless for this, as were many Stack Exchange entries. After a lot of 
+  # digging I spotted an example of declare -g usage that made the light go 
+  # on. All explanations of declare -g found on the Internet simply stink.
+  # Seeing the use cases below will hopefully make it clear how powerful
+  # this feature is and how it makes what is otherwise a HEAD BANGING problem
+  # quite straight forward.
 
   declare -g $3=$(awk "BEGIN{print $high * 256 + $low}")
 }
@@ -233,17 +252,13 @@ getSignedShort() {
 
 # Fetch the sensor calibration register values
 
-patchGetUnsignedShort $BMP_I2C_ADDR $CAL_AC5_REG return
-AC5=$return
+patchGetUnsignedShort $BMP_I2C_ADDR $CAL_AC5_REG ac5
 
-patchGetUnsignedShort $BMP_I2C_ADDR $CAL_AC6_REG return
-AC6=$return
+patchGetUnsignedShort $BMP_I2C_ADDR $CAL_AC6_REG ac6
 
-getSignedShort $BMP_I2C_ADDR $CAL_MC_REG return
-MC=$return
+getSignedShort $BMP_I2C_ADDR $CAL_MC_REG mc
 
-getSignedShort $BMP_I2C_ADDR $CAL_MD_REG return
-MD=$return
+getSignedShort $BMP_I2C_ADDR $CAL_MD_REG md
 
 # Endless loop
 
@@ -255,21 +270,19 @@ while [ 1 -eq 1 ] ; do
 
   # Fetch the raw temp as an unsigned short.
 
-  patchGetUnsignedShort $BMP_I2C_ADDR $BMP_TEMP_DATA return
-  UT=$return
+  patchGetUnsignedShort $BMP_I2C_ADDR $BMP_TEMP_DATA ut
 
   # Adjust with calibration values. See the BMP085 or 180 datasheet for details.
   # The cal and other var names and arithmetic operations are right out of the 
   # datasheet.
 
-  X1=$(awk "BEGIN{print (($UT - $AC6) * $AC5) / 32768}")
-  X2=$(awk "BEGIN{print int(($MC * 2048) / ($X1 + $MD))}")
-  B5=$(awk "BEGIN{print (($X1 + $X2) + 8) / 16}")
+  x1=$(awk "BEGIN{print (($ut - $ac6) * $ac5) / 32768}")
+  x2=$(awk "BEGIN{print int(($mc * 2048) / ($x1 + $md))}")
+  b5=$(awk "BEGIN{print (($x1 + $x2) + 8) / 16}")
 
-  # Show fahrenheit degrees. Don't bother showing a fraction.
+  # Show fahrenheit degrees.
 
-  fahrenheit=$(awk "BEGIN{printf \"%d\",int(($B5 / 10.0) * 1.8 + 32.0)}")
-  echo $fahrenheit
+  echo $(awk "BEGIN{printf \"%4.1f\",($b5 / 10.0) * 1.8 + 32.0}")
 
   # sleep for a while
 
