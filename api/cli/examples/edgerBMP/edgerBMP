@@ -280,9 +280,9 @@ while [ 1 -eq 1 ] ; do
   x2=$(awk "BEGIN{print int(($mc * 2048) / ($x1 + $md))}")
   b5=$(awk "BEGIN{print (($x1 + $x2) + 8) / 16}")
 
-  # Show fahrenheit degrees.
+  # Show temp in centigrade and fahrenheit.
 
-  echo $(awk "BEGIN{printf \"%4.1f\",($b5 / 10.0) * 1.8 + 32.0}")
+  echo $(awk "BEGIN{printf \"C: %4.1f F: %4.1f\",$b5 / 10.0, ($b5 / 10.0) * 1.8 + 32.0}")
 
   # sleep for a while
 
