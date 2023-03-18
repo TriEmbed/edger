@@ -1,7 +1,10 @@
 # edgerBMP
-This directory contains an application that periodically prints temperature measurements to a terminal session. It does not need aardvark, just the USB connection of a "white" dev board to the computer to be displaying temperatures from an I2C breakout board and a shared WIFI connection with the dev board.
+This directory contains applications that periodically print temperature measurements to a terminal session. Aardvark, just a powered up "white" dev board.
 
-The sensor breakout board must have a Bosh BMP085 or BMP180 I2C barometer/temperature sensor connected to the default I2C bus of the dev board.
+edgerBMP85.py is an implementation written in Python for Bosch BMP085 or BMP280
+edgerBMP85.sh is an implementation written in Bash for Bosch BMP085 or BMP280
+
+It would be reasonable to expect the endpoint interfaces to be abstracted out to libraries in the future and then the applications can use library functions. 
 
 ## How to connect the hardware
 
