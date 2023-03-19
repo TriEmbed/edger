@@ -7,19 +7,19 @@
 # connection for convenience: it is not dependent on any communication with
 # the PC (that is handled via WIFI).
 
+# Note the code is slightly simplified to use a mode of "ultra low power" so
+# the raw temp data can be fetched as a short vs as a three byte integer
+# that has to be shifted down to average from the oversampling.
+
 # Tested with an Ubuntu 20.04.04 laptop and a rev 2 "white" dev board. NOTE
 # that the dev board has to be set up for shared WIFI connection to the PC.
 
-# This code is carefully crafted to cause some coders to flee to Python.
-# Seriously, Python has the libraries to deal with HTTP patch without
-# gymnastics like this code uses, not to mention the weird arithmetic via
-# awk, the integer type casting via ancient scrolls of twos complement
-# behavior, etc.
+# This shell version was written for fun. It's the wrong language for this
+# kind of application. See the .py files for better alternatives.
 
 # TheBMP180/085 turned out to be a poor choice, as it is no longer made.
 # Worse, the 180 example used with this code appears to be defective with
-# respect to pressure measurements. The BMP388 is a relatively recent design
-# and an example will be made for this chip, either in Bash or Python.
+# respect to pressure measurements. 
 
 # LIMITATIONS
 # 1) The URLs are hardwired to reference the first dev board by default. To 
@@ -179,10 +179,9 @@ patchGetUnsignedShort() {
 
   # Fetch two bytes from the I2C peripheral using an HTTP request 
   # over WIFI to the Ant firmware in the dev system
-
-  curl --no-progress-meter --location -g --request PATCH \
-  "http://$host.local/api/v1/i2c?get={\"address\":$1,\"index\":$2,\"length\":2}"\
-   --header 'Content-Type: text/plain' --data-raw 'asdasd' >/tmp/curl.$$
+  #echo "address " $1 " index: " $2 " length 2"
+  # 119 178 2
+  curl --no-progress-meter --location -g --request PATCH "http://$host.local/api/v1/i2c?get={\"address\":$1,\"index\":$2,\"length\":2}" --header 'Content-Type: text/plain' --data-raw 'asdasd' >/tmp/curl.$$
 
   status=$?
 
