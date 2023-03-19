@@ -1,5 +1,5 @@
 # edgerBMP
-This directory contains applications that periodically print temperature measurements to a terminal session. Aardvark, just a powered up "white" dev board.
+This directory contains applications that periodically print temperature measurements to a terminal session. No need for Aardvark: just a powered up Edger white dev board with the sensor on its primary I2C bus (i.e. shared with FPGA).
 
 edgerBMP85.py is an implementation written in Python for Bosch BMP085 or BMP280
 edgerBMP85.sh is an implementation written in Bash for Bosch BMP085 or BMP280
