@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 '''
-Periodically get temperature measurements from a BMP085 or BMP280 
+Periodically get temperature measurements from a Bosch BMP085 or BMP280 
 temperature(/barometer) sensor and display them to standard output as degrees
-fahrenheit and centigrade.
+fahrenheit and centigrade. Note that both of these sensors are obsolete. The
+BMP388 is a good alternative.
 
 pete@soper.us March 18, 2023 Creative Commons CC0 1.0 Universal license
 '''
@@ -10,6 +11,10 @@ pete@soper.us March 18, 2023 Creative Commons CC0 1.0 Universal license
 import sys
 import time
 import requests
+
+# Seconds to wait between temp reports
+
+WAIT_TIME = 5
 
 # Bosch sensor I2C access variables
 
@@ -53,12 +58,25 @@ DATA = 'asdasd'
 
 def write_cmd(i2caddr, index, cmd):
     '''Write a command byte to the endpoint URL'''
-    response = requests.patch(
-	ENDPOINT_URL + '?set={"address":' + str(i2caddr) + ',"index":' +
-		str(index) + ',"length":1,"data":[' + str(cmd) + ']}--header',
-	headers=headers,
-	data=DATA,
-    )
+    try:
+        response = requests.patch(
+            ENDPOINT_URL + '?set={"address":' + str(i2caddr) + ',"index":' +
+            str(index) + ',"length":1,"data":[' + str(cmd) + ']}--header',
+            headers=headers, data=DATA,
+        )
+
+    except requests.exceptions.ConnectionError:
+        print('Connection error:')
+        print('This usually means the dev board is not powered up,')
+        print('the WIFI parameters are wrong or the WIFI is not')
+        print('working, or the dev board build/flash failed to')
+        print('prepare the board with the right firmware (i.e. plain')
+        print('esp32 or C3 esp32, etc). Additional clues might be')
+        print('found by running "idf.py monitor".')
+        sys.exit()
+    except Exception as e:
+        print('Unknown exception: ' + e)
+        sys.exit()
 
     if response.status_code != 200:
         print('write_cmd() got this status: ' + str(response.status_code))
@@ -66,12 +84,26 @@ def write_cmd(i2caddr, index, cmd):
 
 def read_data(i2caddr, index, length):
     '''Read a string of bytes from the endpoint URL'''
-    response = requests.patch(
-        ENDPOINT_URL + '?get={"address":' + str(i2caddr) + ',"index":' +
-                str(index) + ',"length":' + str(length) + '}',
-        headers=headers,
-        data=DATA,
-    )
+    try:
+        response = requests.patch(
+            ENDPOINT_URL + '?get={"address":' + str(i2caddr) + ',"index":' +
+                    str(index) + ',"length":' + str(length) + '}',
+            headers=headers,
+            data=DATA,
+        )
+    except requests.exceptions.ConnectionError:
+        print('Connection error:')
+        print('This usually means the dev board is not powered up,')
+        print('the WIFI parameters are wrong or the WIFI is not')
+        print('working, or the dev board build/flash failed to')
+        print('prepare the board with the right firmware (i.e. plain')
+        print('esp32 or C3 esp32, etc). Additional clues might be')
+        print('found by running "idf.py monitor".')
+        sys.exit()
+    except Exception as e:
+        print('Unknown exception: ' + e)
+        sys.exit()
+
     if response.status_code != 200:
         print('read_data() got this status: ' + str(response.status_code))
         sys.exit()
@@ -102,7 +134,7 @@ def get_signed_short(i2caddr, index):
         tmp = (65536 - tmp) * -1
     return tmp
 
-# Fetch calibration constants
+# Fetch calibration constants. Follow naming conventions from datasheet.
 
 AC1 = get_signed_short(BMP085_I2CADDR, BMP085_CAL_AC1)
 AC2 = get_signed_short(BMP085_I2CADDR, BMP085_CAL_AC2)
@@ -119,13 +151,22 @@ MD = get_signed_short(BMP085_I2CADDR, BMP085_CAL_MD)
 # Loop endlessly (until control-C entered), putting out temps
 
 while True:
-    write_cmd(BMP085_I2CADDR, BMP085_CONTROL, BMP085_READTEMPCMD)
+    try:
+        write_cmd(BMP085_I2CADDR, BMP085_CONTROL, BMP085_READTEMPCMD)
 
-    ut = get_unsigned_short(BMP085_I2CADDR, BMP085_TEMPDATA)
+        # Follow naming conventions from datasheet
 
-    x1 = (((ut - AC6) * AC5)) / 32768
-    x2 = int((MC * 2048) / (x1 + MD))
-    b5 = ((x1 + x2) + 8) / 16
+        ut = get_unsigned_short(BMP085_I2CADDR, BMP085_TEMPDATA)
 
-    print('C: ' + str(float(b5 / 10.0)) + ' F: ' + str(float(b5 / 10.0) * 1.8 + 32.0))
-    time.sleep(5)
+        x1 = (((ut - AC6) * AC5)) / 32768
+        x2 = int((MC * 2048) / (x1 + MD))
+        b5 = ((x1 + x2) + 8) / 16
+
+        degrees_c = b5 / 10.0
+        degrees_f = degrees_c * 1.8 + 32.0
+
+        print(f'C: {degrees_c:5.1f} F: {degrees_f:5.1f}')
+
+        time.sleep(WAIT_TIME)
+    except KeyboardInterrupt:
+        sys.exit()
