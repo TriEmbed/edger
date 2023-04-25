@@ -40,12 +40,12 @@ This script does the following:
 5. Uses pnpm to build aardvark
 6. Installs the ESP-IDF (creates $HOME/.espressif)
 7. Copies scripts to $HOME/bin:
-  a. changewifi - accepts input for wifi SSID and password, modifies the ant sdkconfig, and runs idf.py to build (and flash) ant
-  b. startaardvark - starts the node development server serving up the aardvark page/code
+  * changewifi - accepts input for wifi SSID and password, modifies the ant sdkconfig, and runs idf.py to build (and flash) ant
+  * startaardvark - starts the node development server serving up the aardvark page/code
 8. (if $HOME/Desktop exists, indicating a graphical interface is installed) Copies Desktop files to create clickable icons:
-  a. CHANGE WIFI - runs the change wifi script
-  b. START AARDVARK - runs the startaardvark script
-  c. START BROWSER - opens the default browser to the local aardvark URL
+  * CHANGE WIFI - runs the change wifi script
+  * START AARDVARK - runs the startaardvark script
+  * START BROWSER - opens the default browser to the local aardvark URL
 
 ## User group
 The user group kickoff meeting was held on 8/31/2022. Video here: https://youtu.be/zqejgwW3aIo
