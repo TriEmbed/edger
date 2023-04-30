@@ -26,9 +26,9 @@ When run with the --install argument, this script will do the following:
   * clones the $IDF_BRANCH_DEFAULT branch unless specified with --idf-branch
 3. Install node.js and pnpm (in standard places)
 4. Use pnpm to build aardvark
-5. Run the ESP IDF Installer (creates $HOME/.espressif)
-6. Copy changewifi and startaardvark scripts to $HOME/bin
-7. Copy icon files to $HOME/Desktop, if it exists
+5. Run the ESP IDF Installer (creates \$HOME/.espressif)
+6. Copy changewifi and startaardvark scripts to \$HOME/bin
+7. Copy icon files to \$HOME/Desktop, if it exists
 8. Make the following changes to \$HOME/.bashrc
   * add a line that appends \$HOME/bin to \$PATH, if not there already
   * add a function "exportidf" that will source the idf export.sh 
@@ -89,7 +89,7 @@ if [[ -z $IDF_DIR ]]; then
   IDF_DIR=$IDF_DIR_DEFAULT
 else
   if [[ ${IDF_DIR:0:1} != "/" ]]; then
-    echo "--esp-idf must be specified as absolute path"
+    echo "--idf must be specified as absolute path"
     arg_error=1
   fi
 fi
