@@ -5,34 +5,69 @@
 
 # The Espressif docs have the recipes for package installs for other Linux flavors
 
+## default values for optional arguments
+EDGER_DIR_DEFAULT=$HOME/workspace/esp32/edger
+IDF_DIR_DEFAULT=$HOME/esp/esp-idf
+IDF_BRANCH_DEFAULT=v4.4
+
 usage() {
   cat <<EOF
-$0 [--with-edger=<edger-path>] [--with-esp-idf=<esp-idf-path>]
-  --with-edger=<edger-path> (optional) 
-    use/install edger at this (absolute) path
-  --with-esp-idf=<esp-idf-path> (optional) 
-    use/install esp-idf at this (absolute) path
+$0 --install [--edger=<edger-path>] [--idf=<esp-idf-path>] [--idf-branch=<ESP IDF branch>]
+  --install (required or usage is printed and no changes made)
+  --edger=<edger-path> or --edger <edger-path> (optional) 
+  --idf=<esp-idf-path> or --idf <idf-path> (optional) 
+  --idf-branch=<idf-git-branch> (optional)
+
+When run with the --install argument, this script will do the following:
+1. Check for (and if non-existent clone) the Edger git repo
+  * in $EDGER_DIR_DEFAULT or directory specified with --edger
+2. Check for (and if non-existent clone) the ESP IoT Dev Framework (IDF) repo
+  * in $IDF_DIR_DEFAULT or directory specified with --idf
+  * clones the $IDF_BRANCH_DEFAULT branch unless specified with --idf-branch
+3. Install node.js and pnpm (in standard places)
+4. Use pnpm to build aardvark
+5. Run the ESP IDF Installer (creates $HOME/.espressif)
+6. Copy changewifi and startaardvark scripts to $HOME/bin
+7. Copy icon files to $HOME/Desktop, if it exists
+8. Make the following changes to \$HOME/.bashrc
+  * add a line that appends \$HOME/bin to \$PATH, if not there already
+  * add a function "exportidf" that will source the idf export.sh 
+    (after which the idf.py command can be run)
+
 EOF
 }
 
 # Process command line arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --with-edger=*)
-      EDGER_DIR=${1#*=} 
+    --edger*)
+      # remove characters from $1 up to =
+      EDGER_DIR=${1#*=}  
+      # no = in argument - get next arg for value
+      if [[ $EDGER_DIR = $1 ]]; then 
+        shift
+        EDGER_DIR=$1
+      fi
       echo "edger = $EDGER_DIR"
       ;;
-    --with-esp-idf=*)
-      ESP_IDF_DIR=${1#*=} 
-      echo "esp-idf = $ESP_IDF_DIR"
+    --idf*)
+      IDF_DIR=${1#*=} 
+      if [[ $IDF_DIR = $1 ]]; then
+        shift
+        IDF_DIR=$1
+      fi
+      echo "esp-idf = $IDF_DIR"
       ;;
-    --esp-idf-branch=*)
-      ESP_IDF_BRANCH=${1#*=}
-      echo "esp-idf-branch = $ESP_IDF_BRANCH"
+    --idf-branch*)
+      IDF_BRANCH=${1#*=}
+      if [[ $IDF_BRANCH = $1 ]]; then
+        shift
+        IDF_BRANCH=$1
+      fi
+      echo "esp-idf-branch = $IDF_BRANCH"
       ;;
-    --help)
-      usage
-      exit 0
+    --install)
+      INSTALL='true'
       ;;
     *)
       echo "unrecognized argument '$1'" 
@@ -43,35 +78,41 @@ done
 
 # Check arguments and set defaults if needed
 if [[ -z $EDGER_DIR ]]; then
-  EDGER_DIR=$HOME/workspace/esp32/edger
+  EDGER_DIR=$EDGER_DIR_DEFAULT
 else
   if [[ ${EDGER_DIR:0:1} != "/" ]]; then
-    echo "--with-edger must be specified as absolute path"
+    echo "--edger must be specified as absolute path"
     arg_error=1
   fi
 fi
-if [[ -z $ESP_IDF_DIR ]]; then
-  ESP_IDF_DIR=$HOME/esp/esp-idf
+if [[ -z $IDF_DIR ]]; then
+  IDF_DIR=$IDF_DIR_DEFAULT
 else
-  if [[ ${ESP_IDF_DIR:0:1} != "/" ]]; then
-    echo "--with-esp-idf must be specified as absolute path"
+  if [[ ${IDF_DIR:0:1} != "/" ]]; then
+    echo "--esp-idf must be specified as absolute path"
     arg_error=1
   fi
 fi
-if [[ -z $ESP_IDF_BRANCH ]]; then
-  ESP_IDF_BRANCH=v4.4
+if [[ -z $IDF_BRANCH ]]; then
+  IDF_BRANCH=$IDF_BRANCH_DEFAULT
 fi
 
 if [[ $arg_error = "1" ]]; then
   echo "encountered errors processing argument(s)"
+  echo "run without arguments to see usage info"
   exit 1
+fi
+
+if [[ $INSTALL != 'true' ]]; then
+  usage
+  exit 0
 fi
 
 echo "==> Install the prerequisite packages"
 
 sudo apt-get install -q -q -y git wget flex bison gperf python3 python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 python3-pip curl
 
-echo "==> checking/cloning Edger repo"
+echo "==> checking/cloning Edger repo in $EDGER_DIR"
 # Fetch the Edger repo
 if [[ -d $EDGER_DIR ]] ; then
   cd $EDGER_DIR
@@ -103,7 +144,7 @@ mkdir -p $HOME/bin
 for script in $(ls $EDGER_DIR/tools/thumbdrive/home/bin); do
   echo "  $script"
   sed "s:\$HOME/workspace/esp32/edger:$EDGER_DIR:
-       s:\$HOME/esp/esp-idf:$ESP_IDF_DIR:" \
+       s:\$HOME/esp/esp-idf:$IDF_DIR:" \
     $EDGER_DIR/tools/thumbdrive/home/bin/$script > $HOME/bin/$script
   chmod u+x $HOME/bin/$script
 done
@@ -121,15 +162,10 @@ else
 fi
   
 echo "==> checking for $HOME/bin in path"
-grep '$HOME/bin' $HOME/.bashrc | grep -q PATH=
+grep '\$HOME/bin' $HOME/.bashrc | grep -q PATH=
 if [ $? -ne 0 ] ; then
-  echo '$HOME/bin is not in your search rules in .bashrc: adding PATH=\"$PATH:$HOME/bin'
-  echo 'export PATH="$PATH:$HOME/bin"' >>$HOME/.bashrc
-fi
-
-echo $PATH | grep -q "$USER/bin"
-if [ $? -ne 0 ] ; then
-  export PATH=$PATH:$HOME/bin
+  echo '\$HOME/bin is not in your search rules in .bashrc: adding PATH=\"\$PATH:\$HOME/bin'
+  echo 'export PATH="\$PATH:\$HOME/bin"' >>$HOME/.bashrc
 fi
 
 echo "==> checking if user is in dialout group"
@@ -141,25 +177,25 @@ if [ $? -ne 0 ] ; then
   exit 0
 fi
 
-echo "==> checking/cloning esp-idf repo"
-if [[ -d $ESP_IDF_DIR ]] ; then
-  cd $ESP_IDF_DIR
+echo "==> checking/cloning esp-idf repo in $IDF_DIR"
+if [[ -d $IDF_DIR ]] ; then
+  cd $IDF_DIR
   branch=$(git branch)
   if [[ $? -eq 0 ]]; then
-    echo "esp-idf dir $ESP_IDF_DIR is a git repo on branch $branch"
+    echo "esp-idf dir $IDF_DIR is a git repo on branch $branch"
   fi
-  if [[ ! -f $ESP_IDF_DIR/install.sh ]]; then
-    echo "esp-idf dir $ESP_IDF_DIR has no install.sh. Is it an esp-idf repo?"
+  if [[ ! -f $IDF_DIR/install.sh ]]; then
+    echo "esp-idf dir $IDF_DIR has no install.sh. Is it an esp-idf repo?"
   fi
 else
-  mkdir -p $(dirname $ESP_IDF_DIR)
-  if [[ ! -w $(dirname $ESP_IDF_DIR) ]]; then
-    echo "$(dirname $ESP_IDF_DIR) is not writeable. Unable to clone esp-idf to $ESP_IDF_DIR"
+  mkdir -p $(dirname $IDF_DIR)
+  if [[ ! -w $(dirname $IDF_DIR) ]]; then
+    echo "$(dirname $IDF_DIR) is not writeable. Unable to clone esp-idf to $IDF_DIR"
     exit 1
   fi
   echo "==> Fetch the Espressif IDF"
-  cd $(dirname $ESP_IDF_DIR)
-  git clone -b $ESP_IDF_BRANCH --recursive https://github.com/espressif/esp-idf.git $(basename $ESP_IDF_DIR)
+  cd $(dirname $IDF_DIR)
+  git clone -b $IDF_BRANCH --recursive https://github.com/espressif/esp-idf.git $(basename $IDF_DIR)
 fi
 
 echo "==> checking/installing nvm/npm/pnpm"
@@ -199,35 +235,45 @@ if [ $? -ne 0 ] ; then
 fi
 pnpm run build
 if [ $? -ne 0 ] ; then
+  echo "pnpm run build failed"
+  exit 1
+fi
+pnpm build
+if [ $? -ne 0 ] ; then
   echo "pnpm build failed"
   exit 1
 fi
 
 # install the IDF
-cd $ESP_IDF_DIR
+cd $IDF_DIR
 if [ ! -d $HOME/.espressif ] ; then
   echo "==> Installing ESP IDF"
   bash ./install.sh
 fi
 
-echo "==> checking for $ESP_IDF_DIR in .bashrc"
+echo "==> checking for idfexport function in .bashrc"
 grep -q 'idfexport()' $HOME/.bashrc
 if [ $? -eq 0 ]; then
-  grep 'idfexport()' $HOME/.bashrc | grep -q $ESP_IDF_DIR/export.sh
+  grep 'idfexport()' $HOME/.bashrc | grep -q $IDF_DIR/export.sh
   if [ $? -ne 0 ]; then
     echo "==> updating idf export path in $HOME/.bashrc"
-    sed -i "s:^idfexport.*:idfexport() { source $ESP_IDF_DIR/export.sh; }:" $HOME/.bashrc
+    sed -i "s:^idfexport.*:idfexport() { source $IDF_DIR/export.sh; }:" $HOME/.bashrc
   fi
 else
-  echo "==> adding ESP export.sh to .bashrc"
-  echo "idfexport() { source $ESP_IDF_DIR/export.sh; }" >> $HOME/.bashrc
+  echo "==> adding idfexport function to $HOME/.bashrc"
+  echo "idfexport() { source $IDF_DIR/export.sh; }" >> $HOME/.bashrc
 fi
 
+## Not sure if we expect someone to source this and expect commands
+## to work afterward in the same shell. If not, can remove this and the 
+## conditional on $sourced below
 if [[ $_ != $0 ]]; then
   sourced=1
-  . $ESP_IDF_DIR/export.sh
+  . $IDF_DIR/export.sh
+  export PATH=$PATH:$HOME/bin
 fi
 
+## print final message
 echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
 echo "Then use the start aardvark icon followed by the start browser icon to run Edger"
 if [[ "$sourced" != "1" ]]; then
