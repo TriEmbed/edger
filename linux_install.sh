@@ -162,10 +162,10 @@ else
 fi
   
 echo "==> checking for $HOME/bin in path"
-grep '\$HOME/bin' $HOME/.bashrc | grep -q PATH=
+grep '$HOME/bin' $HOME/.bashrc | grep -q PATH=
 if [ $? -ne 0 ] ; then
-  echo '\$HOME/bin is not in your search rules in .bashrc: adding PATH=\"\$PATH:\$HOME/bin'
-  echo 'export PATH="\$PATH:\$HOME/bin"' >>$HOME/.bashrc
+  echo '$HOME/bin is not in your search rules in .bashrc: adding PATH=\"$PATH:$HOME/bin'
+  echo 'export PATH="$PATH:$HOME/bin"' >>$HOME/.bashrc
 fi
 
 echo "==> checking if user is in dialout group"
