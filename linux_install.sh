@@ -172,11 +172,8 @@ if [[ $? -ne 0 ]]; then
   exit
 fi
 
-## print final message
-echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
-echo "Then use the start aardvark icon followed by the start browser icon to run Edger"
-if [[ "$sourced" != "1" ]]; then
-  echo "idf.py can be used directly in this shell. To use in future first type idfexport"
-else
-  echo "To use idf.py directly, first launch a new shell and type idfexport"
-fi
+## print final message (note aardvark final message will precede this hence not mentioned)
+echo "Use the change wifi icon (or changewifi script) to customize, build, and flash ant"
+echo "to your dev board. It must be plugged in for this."
+echo "To use idf.py directly, type idfexport."
+echo "For any of this to work you'll need to launch a new shell or log out and back in."
