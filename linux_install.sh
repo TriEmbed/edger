@@ -169,9 +169,12 @@ if [ $? -ne 0 ] ; then
   echo 'export PATH="$PATH:$HOME/bin"' >>$HOME/.bashrc
 fi
 
-$EDGER_DIR/aardvark/linux_install.sh $@
 
+echo "==> install Ant"
 $EDGER_DIR/ant/linux_install.sh $@
+
+echo "==> install Aardvark"
+$EDGER_DIR/aardvark/linux_install.sh $@
 
 ## print final message
 echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
