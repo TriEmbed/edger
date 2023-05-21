@@ -109,8 +109,6 @@ if [[ $INSTALL != 'true' ]]; then
 fi
 
 echo "==> Install the prerequisite packages"
-
-sudo apt-get install -q -q -y git curl
 #sudo apt-get install -q -q -y git wget flex bison gperf python3 python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 python3-pip curl
 
 echo "==> checking/cloning Edger repo in $EDGER_DIR"
@@ -142,7 +140,8 @@ fi
 # Copy bin scripts
 echo "==> creating/updating scripts in $HOME/bin"
 mkdir -p $HOME/bin
-for script in $(ls $EDGER_DIR/tools/thumbdrive/home/bin); do
+# todo move script under aardvark and do foreach ls
+for script in startaardvark; do
   echo "  $script"
   sed "s:\$HOME/workspace/esp32/edger:$EDGER_DIR:
        s:\$HOME/esp/esp-idf:$IDF_DIR:" \
@@ -153,7 +152,6 @@ done
 # Copy desktop files
 if [[ -d $HOME/Desktop ]]; then
   echo "==> copying icons to $HOME/Desktop"
-  sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/changewifi.desktop >$HOME/Desktop/changewifi.desktop
   sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/startaardvark.desktop >$HOME/Desktop/startaardvark.desktop
   sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/startbrowser.desktop >$HOME/Desktop/startbrowser.desktop
 else
@@ -169,15 +167,52 @@ if [ $? -ne 0 ] ; then
   echo 'export PATH="$PATH:$HOME/bin"' >>$HOME/.bashrc
 fi
 
-$EDGER_DIR/aardvark/linux_install.sh $@
+echo "==> checking/installing nvm/npm/pnpm"
+if [ ! -d $HOME/.nvm ] ; then
+  curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh 2>/dev/null | bash >/tmp/log 2>&1
+  cat /tmp/log
+  export NVM_DIR=$HOME/.nvm
+  . $NVM_DIR/nvm.sh
+  nvm install 14
+  if [ $? -ne 0 ] ; then
+    echo "fatal error: nvm/npm install failed"
+    echo "type return to continue"
+    exit 1
+  fi
+  npm add -g @pnpm/exe
+  if [ $? -ne 0 ] ; then
+    echo "fatal error: pnpm install failed"
+    echo "type return to continue"
+    exit 1
+  fi
+fi
 
-$EDGER_DIR/ant/linux_install.sh $@
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Aardvark is currently prepared from scratch every time so it picks up 
+# changes to the repo. This could be made smarter by comparing the git log
+# with file mod dates.
+
+cd $EDGER_DIR/aardvark
+echo "==> building aardvark"
+pnpm install
+if [ $? -ne 0 ] ; then
+  echo "pnpm install failed"
+  exit 1
+fi
+pnpm run build
+if [ $? -ne 0 ] ; then
+  echo "pnpm run build failed"
+  exit 1
+fi
+pnpm build
+if [ $? -ne 0 ] ; then
+  echo "pnpm build failed"
+  exit 1
+fi
 
 ## print final message
-echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
-echo "Then use the start aardvark icon followed by the start browser icon to run Edger"
-if [[ "$sourced" != "1" ]]; then
-  echo "idf.py can be used directly in this shell. To use in future first type idfexport"
-else
-  echo "To use idf.py directly, first launch a new shell and type idfexport"
-fi
+echo "Use the start aardvark icon (or startaardvark script) to start serving Aardvark."
+echo "Use the start browser icon, (or browse to http://localhost:8080) to access."
