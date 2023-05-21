@@ -158,10 +158,11 @@ done
 if [[ -d $HOME/Desktop ]]; then
   echo "==> copying icons to $HOME/Desktop"
   sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/changewifi.desktop >$HOME/Desktop/changewifi.desktop
+  gio set $HOME/Desktop/changewifi.desktop metadata::trusted true
+  chmod 700 $HOME/Desktop/changewifi.desktop
 else
   echo "$HOME/Desktop does not exist. Skipping addition of desktop icons."
-  echo "Use $HOME/bin/changewifi and $HOME/bin/startaardvark directly" 
-  echo "Once running, aardvark can be accessed at port 8080 on the local device"
+  echo "Use $HOME/bin/changewifi directly to configure wifi and build/flash ant." 
 fi
   
 echo "==> checking for $HOME/bin in path"

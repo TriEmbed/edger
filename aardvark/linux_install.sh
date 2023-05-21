@@ -154,9 +154,12 @@ if [[ -d $HOME/Desktop ]]; then
   echo "==> copying icons to $HOME/Desktop"
   sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/startaardvark.desktop >$HOME/Desktop/startaardvark.desktop
   sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/startbrowser.desktop >$HOME/Desktop/startbrowser.desktop
+  gio set $HOME/Desktop/startbrowser.desktop metadata::trusted true
+  gio set $HOME/Desktop/startaardvark.desktop metadata::trusted true
+  chmod 700 $HOME/Desktop/startbrowser.desktop $HOME/Desktop/startaardvark.desktop
 else
   echo "$HOME/Desktop does not exist. Skipping addition of desktop icons."
-  echo "Use $HOME/bin/changewifi and $HOME/bin/startaardvark directly" 
+  echo "Use $HOME/bin/startaardvark directly" 
   echo "Once running, aardvark can be accessed at port 8080 on the local device"
 fi
   

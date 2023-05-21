@@ -153,25 +153,12 @@ for script in $(ls $EDGER_DIR/tools/thumbdrive/home/bin); do
   chmod u+x $HOME/bin/$script
 done
 
-# Copy desktop files
-if [[ -d $HOME/Desktop ]]; then
-  echo "==> copying icons to $HOME/Desktop"
-  sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/changewifi.desktop >$HOME/Desktop/changewifi.desktop
-  sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/startaardvark.desktop >$HOME/Desktop/startaardvark.desktop
-  sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/startbrowser.desktop >$HOME/Desktop/startbrowser.desktop
-else
-  echo "$HOME/Desktop does not exist. Skipping addition of desktop icons."
-  echo "Use $HOME/bin/changewifi and $HOME/bin/startaardvark directly" 
-  echo "Once running, aardvark can be accessed at port 8080 on the local device"
-fi
-  
 echo "==> checking for $HOME/bin in path"
 grep '$HOME/bin' $HOME/.bashrc | grep -q PATH=
 if [ $? -ne 0 ] ; then
   echo '$HOME/bin is not in your search rules in .bashrc: adding PATH=\"$PATH:$HOME/bin'
   echo 'export PATH="$PATH:$HOME/bin"' >>$HOME/.bashrc
 fi
-
 
 echo "==> install Ant"
 $EDGER_DIR/ant/linux_install.sh $ARGS
