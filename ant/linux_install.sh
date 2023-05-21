@@ -160,6 +160,9 @@ if [[ -d $HOME/Desktop ]]; then
   sed -e"s@\$HOME@$HOME@" <$EDGER_DIR/tools/thumbdrive/home/Desktop/changewifi.desktop >$HOME/Desktop/changewifi.desktop
   gio set $HOME/Desktop/changewifi.desktop metadata::trusted true
   chmod 700 $HOME/Desktop/changewifi.desktop
+  if [[ -d $HOME/Pictures ]]; then
+    cp $EDGER_DIR/tools/thumbdrive/home/Pictures/chevron_yellowgold.jpg $HOME/Pictures
+  fi
 else
   echo "$HOME/Desktop does not exist. Skipping addition of desktop icons."
   echo "Use $HOME/bin/changewifi directly to configure wifi and build/flash ant." 

@@ -157,6 +157,9 @@ if [[ -d $HOME/Desktop ]]; then
   gio set $HOME/Desktop/startbrowser.desktop metadata::trusted true
   gio set $HOME/Desktop/startaardvark.desktop metadata::trusted true
   chmod 700 $HOME/Desktop/startbrowser.desktop $HOME/Desktop/startaardvark.desktop
+  if [[ -d $HOME/Pictures ]]; then
+    cp $EDGER_DIR/tools/thumbdrive/home/Pictures/chevron_yellowgold.jpg $HOME/Pictures
+  fi
 else
   echo "$HOME/Desktop does not exist. Skipping addition of desktop icons."
   echo "Use $HOME/bin/startaardvark directly" 
