@@ -177,7 +177,7 @@ if [ $? -ne 0 ] ; then
   echo "==> Adding $USER to dialout group"
   sudo addgroup $USER dialout
   echo "log out and back in to be in dialout group and then run this script again"
-  exit 0
+  exit 1
 fi
 
 echo "==> checking/cloning esp-idf repo in $IDF_DIR"

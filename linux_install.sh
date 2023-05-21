@@ -175,9 +175,15 @@ fi
 
 echo "==> install Ant"
 $EDGER_DIR/ant/linux_install.sh $ARGS
+if [[ $? -ne 0 ]]; then
+  exit
+fi
 
 echo "==> install Aardvark"
 $EDGER_DIR/aardvark/linux_install.sh $ARGS
+if [[ $? -ne 0 ]]; then
+  exit
+fi
 
 ## print final message
 echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
