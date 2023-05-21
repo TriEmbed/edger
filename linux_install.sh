@@ -37,6 +37,9 @@ When run with the --install argument, this script will do the following:
 EOF
 }
 
+# save to pass to sub-installers
+ARGS=$@
+
 # Process command line arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -171,10 +174,10 @@ fi
 
 
 echo "==> install Ant"
-$EDGER_DIR/ant/linux_install.sh $@
+$EDGER_DIR/ant/linux_install.sh $ARGS
 
 echo "==> install Aardvark"
-$EDGER_DIR/aardvark/linux_install.sh $@
+$EDGER_DIR/aardvark/linux_install.sh $ARGS
 
 ## print final message
 echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
