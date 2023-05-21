@@ -107,11 +107,12 @@ fi
 
 echo "==> Install the prerequisite packages"
 
-sudo apt-get install -q -y \
+sudo apt-get install -q -q -y \
   git  \
   wget \
   python3 python3-venv python3-pip \
   cmake \
+  ninja-build \
   curl
 #sudo apt-get install -q -y flex bison gperf ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 
 
