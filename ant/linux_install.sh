@@ -106,15 +106,15 @@ if [[ $INSTALL != 'true' ]]; then
 fi
 
 echo "==> Install the prerequisite packages"
-
+# python3, libusb-1.0-0, wget installed already on 20.04 and 22.04
+# python3-venv and python3-pip will install python3 as dep if needed
 sudo apt-get install -q -q -y \
   git  \
-  wget \
-  python3 python3-venv python3-pip \
+  python3-venv python3-pip \
   cmake \
   ninja-build \
   curl
-#sudo apt-get install -q -y flex bison gperf ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 
+#sudo apt-get install -q -y flex bison gperf ccache libffi-dev libssl-dev dfu-util
 
 echo "==> checking/cloning Edger repo in $EDGER_DIR"
 # Fetch the Edger repo
@@ -237,10 +237,7 @@ if [[ $_ != $0 ]]; then
 fi
 
 ## print final message
-echo "Now use the change wifi icon to customize your dev board. It must be plugged in for this."
-echo "Then use the start aardvark icon followed by the start browser icon to run Edger"
-if [[ "$sourced" != "1" ]]; then
-  echo "idf.py can be used directly in this shell. To use in future first type idfexport"
-else
-  echo "To use idf.py directly, first launch a new shell and type idfexport"
-fi
+echo "Now use the change wifi icon (or changewifi script) to customize your dev board." 
+echo "It must be plugged in for this."
+echo "To use idf.py directly, first type idfexport."
+echo "For any of this to work you'll need to log out and back in to load the changes made by the install script."
