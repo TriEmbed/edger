@@ -142,24 +142,6 @@ else
   fi
 fi
 
-# Copy bin scripts
-echo "==> creating/updating scripts in $HOME/bin"
-mkdir -p $HOME/bin
-for script in $(ls $EDGER_DIR/tools/thumbdrive/home/bin); do
-  echo "  $script"
-  sed "s:\$HOME/workspace/esp32/edger:$EDGER_DIR:
-       s:\$HOME/esp/esp-idf:$IDF_DIR:" \
-    $EDGER_DIR/tools/thumbdrive/home/bin/$script > $HOME/bin/$script
-  chmod u+x $HOME/bin/$script
-done
-
-echo "==> checking for $HOME/bin in path"
-grep '$HOME/bin' $HOME/.bashrc | grep -q PATH=
-if [ $? -ne 0 ] ; then
-  echo '$HOME/bin is not in your search rules in .bashrc: adding PATH=\"$PATH:$HOME/bin'
-  echo 'export PATH="$PATH:$HOME/bin"' >>$HOME/.bashrc
-fi
-
 echo "==> install Ant"
 $EDGER_DIR/ant/linux_install.sh $ARGS
 if [[ $? -ne 0 ]]; then
