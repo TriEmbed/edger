@@ -13,8 +13,8 @@
             <v-col cols="12">
               <v-text-field
                 v-model="formData.name"
-                :rules="[v => !!v || 'Please enter a device name']"
-                label="Device name"
+                :rules="[v => !!v || 'Please enter a device index']"
+                label="Device index"
               />
             </v-col>
           </v-row>

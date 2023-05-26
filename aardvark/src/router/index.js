@@ -43,9 +43,9 @@ const buildDynamicRoutes = (menus = [], userPermissions = []) => {
   // we add path item which is new within ant it contains the numerical ip address
   // nje
   const recursive = (items = []) => {
-    return items.map(({permissions = [], text, to, type, children = [], redirect,path, resource}) => {
+    return items.map(({permissions = [], text, to, type, children = [], redirect, path, resource}) => {
       const route = {
-        meta: {permissions,path: path},
+        meta: {permissions, path: path},
         name: text,
         path: to,
       }

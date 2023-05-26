@@ -82,6 +82,6 @@ esp_err_t configuration_get_handler(httpd_req_t *req) {
 
     httpd_resp_set_type(req, "application/json");
     httpd_resp_sendstr(req, cJSON_Print(root));
-    cJSON_Delete(root);
+    cJSON_free(root);
     return ESP_OK;
 }

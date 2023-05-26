@@ -16,12 +16,12 @@
       EEPROM Ram
     </v-btn>
     <div
-        class="drop"
-        :class="getClasses"
-        @dragover="dragOver"
-        @prevent="dragLeave"
-        @drop="drop($event)"
-        v-on:click.native.prevent
+      :class="getClasses"
+      class="drop"
+      @dragover="dragOver"
+      @drop="drop($event)"
+      @prevent="dragLeave"
+      @click.native.prevent
     >
       <!--      <textarea v-model="textSource" v-if="textSource"/>-->
       <!--      <h1 v-if="wrongFile">-->
@@ -35,17 +35,17 @@
       <!--      <input type="file" id="uploadmytextfile" @change="requestUploadFile">-->
       <div v-if="mode === 'basic'">
         <vue-grid-sheet
-            ref="grid"
-            :data="demoBasic.data"
-            :format="demoBasic.format"
-            :header="demoBasic.header"
-            :state="demoBasic.state"
+          ref="grid"
+          :data="demoBasic.data"
+          :format="demoBasic.format"
+          :header="demoBasic.header"
+          :state="demoBasic.state"
         />
       </div>
       <div v-if="mode === 'csv'" class="pane">
-        <textarea v-model="dataSrc"/>
+        <textarea v-model="dataSrc" />
         <div class="right">
-          <vue-spreadsheet-lite :data="gridData" @update="onUpdate"/>
+          <vue-spreadsheet-lite :data="gridData" @update="onUpdate" />
         </div>
       </div>
     </div>
@@ -57,11 +57,10 @@
 
 import VueGridSheet from "@/components/gridsheet/gridsheet";
 import {set} from "@/api/esp"
-import xml2js from "xml2js";
 
 const example = [...Array(20).keys()]
-    .map(i => `A${i} B${i} C${i} D${i} D${i}`)
-    .join("\n");
+  .map(i => `A${i} B${i} C${i} D${i} D${i}`)
+  .join("\n");
 
 
 let width = 50;

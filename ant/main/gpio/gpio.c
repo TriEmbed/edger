@@ -603,8 +603,9 @@ getFun (char *parm, UNUSED httpd_req_t * req)
      
 
 // everthing looks good call the get
-      printf ("{ \"%s\": %d, \"%s\": %d , \"%s\": %d } \n\n\n",
-	      pinString, (unsigned int) (address->valuedouble));
+     // printf ("{ \"%s\": %d, \"%s\": %d , \"%s\": %d } \n\n\n",
+	    //  pinString, (unsigned int) (address->valuedouble));
+
       cJSON_AddItemToObject (response, funName,
 			     gpioGet ((unsigned char) (address->valuedouble)));
       return response;

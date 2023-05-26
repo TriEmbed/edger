@@ -1,5 +1,19 @@
 <template>
-  <div class="fill-height fill-width overflow-hidden">
+  <div>
+    <div class="fill-height fill-width overflow-hidden">
+      <template>
+        <v-btn class="mr-2" depressed tile @click="testGetMenu">
+          test get menu
+        </v-btn>
+
+        <v-btn class="mr-2" depressed tile @click="testGetInfo">
+          test get info
+        </v-btn>
+      </template>
+      <p>info = {{ info }}</p>
+      <p>devices {{ devices }}</p>
+    </div>
+    div class="fill-height fill-width overflow-hidden">
     <DataTable
       ref="table"
       :default-options="{
@@ -82,11 +96,21 @@
 import DeviceSchema from './modules/DeviceSchema.vue'
 import {deleteDevice, getDeviceList} from '@/api/device'
 import toast from '@/utils/toast'
+import {getInfo, getMenus} from '@/api/esp'
+import {EspMutations} from "@/store/modules";
+import store from "@/store";
+
 
 export default {
   name: 'DeviceList',
   components: {
     DeviceSchema,
+  },
+  props: {
+    id: {
+      type: String,
+      default: 'Vue!',
+    },
   },
   data: () => ({
     query: {
@@ -94,6 +118,8 @@ export default {
     },
   }),
   computed: {
+
+
     headers () {
       return [
         {
@@ -105,7 +131,7 @@ export default {
           fixed: true,
         },
         {
-          text: 'Device name',
+          text: 'Device index',
           align: 'center',
           sortable: false,
           value: 'name',
@@ -165,8 +191,33 @@ export default {
       ]
     },
   },
+  mounted () {
+    console.log("ere")
+  },
   methods: {
+
     /**
+     * Added items
+     * @return {Undefined}
+     */
+    testGetMenu () {
+      this.loadGetMenu().then(a => alert(a))
+    },
+
+
+    async loadGetMenu () {
+      await getMenus(null)
+    },
+
+    testGetInfo () {
+
+      store.dispatch(`esp/${EspMutations.ESP_FUNCTION}`, ["cat"])
+      this.loadGetInfo().then(a => alert(a))
+    },
+
+    async loadGetInfo () {
+      await getInfo(null)
+    }, /**
      * Call the interface data and initialize the table
      * @return {Promise<Undefined>}
      */
@@ -226,6 +277,34 @@ export default {
       await this.$refs.table.refresh()
     },
   },
+
+
+  /**
+   * Added items
+   * @return {Undefined}
+   */
+  testGetMenu () {
+    this.loadGetMenu().then(
+      a => {
+        alert(a)
+      },
+    )
+  },
+
+  async loadGetMenu () {
+    await getMenus(null)
+  },
+
+  testGetInfo () {
+
+    store.dispatch(`esp/${EspMutations.ESP_FUNCTION}`, ["cat"])
+    this.loadGetInfo().then(a => alert(a))
+  },
+
+  async loadGetInfo () {
+    await getInfo(null)
+  },
+
 }
 </script>
 

@@ -1,18 +1,97 @@
 <template>
   <v-container>
     <v-layout text-xs-center wrap>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex offset-sm3 sm6 xs12>
+        <v-btn class="mr-2" depressed tile @click="test1">
+          test 1
+        </v-btn>
         <v-card>
           <v-toolbar
-            flat
             dense
+            flat
+          >
+            <v-toolbar-title>
+              <span class="subheading">Blinker speed</span>
+            </v-toolbar-title>
+          </v-toolbar>
+
+          <v-card-text>
+            <v-row
+              class="mb-4"
+              justify="space-between"
+            >
+              <v-col class="text-left">
+                <span
+                  class="text-h2 font-weight-light"
+                  v-text="pos[0]"
+                />
+                <span class="subheading font-weight-light mr-1">BPM</span>
+                <v-fade-transition>
+                  <v-avatar
+                    v-if="isOn"
+                    :style="{
+                      animationDuration: animationDuration
+                    }"
+                    class="mb-1 v-avatar--metronome"
+                    color="red"
+                    size="12"
+                  />
+                </v-fade-transition>
+              </v-col>
+              <v-col class="text-right">
+                <v-btn
+                  color="#005db5"
+                  dark
+                  depressed
+                  fab
+                  @click="toggle"
+                >
+                  <v-icon large>
+                    {{ isOn ? "pause" : "play_arrow" }}
+                  </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
+            <v-slider
+              v-model="pos[0]"
+              always-dirty
+              color="#005db5"
+              max="600"
+              min="10"
+              track-color="grey"
+              @mouseup="post_duration"
+            >
+              <template #prepend>
+                <v-icon
+                  color="#005db5"
+                  @click="decrement(0)"
+                >
+                  remove
+                </v-icon>
+              </template>
+
+              <template #append>
+                <v-icon
+                  color="#005db5"
+                  @click="increment(0)"
+                >
+                  add
+                </v-icon>
+              </template>
+            </v-slider>
+          </v-card-text>
+        </v-card>
+        <v-card>
+          <v-toolbar
+            dense
+            flat
           >
             <v-toolbar-title>
               <span class="subheading">Rheostat One</span>
             </v-toolbar-title>
           </v-toolbar>
 
-          
           <v-card-text>
             <v-row
               class="mb-4"
@@ -21,18 +100,18 @@
               <v-col class="text-left">
                 <span
                   class="text-h3 font-weight-light"
-                  v-text="steps1"
+                  v-text="pos[1]"
                 />
-                <span class="subheading font-weight-light mr-1">steps1</span>
+                <span class="subheading font-weight-light mr-1">pos[1]</span>
               </v-col>
             </v-row>
             <v-slider
-              v-model="steps1"
-              color="#005db5"
-              track-color="grey"
+              v-model="pos[1]"
               always-dirty
-              min="0"
+              color="#005db5"
               max="1024"
+              min="0"
+              track-color="grey"
               @mouseup="post_duration"
             >
               <template #prepend>
@@ -56,8 +135,8 @@
         </v-card>
         <v-card>
           <v-toolbar
-            flat
             dense
+            flat
           >
             <v-toolbar-title>
               <span class="subheading">Rheostat Two</span>
@@ -72,17 +151,17 @@
               <v-col class="text-left">
                 <span
                   class="text-h3 font-weight-light"
-                  v-text="steps2"
+                  v-text="pos[2]"
                 />
-                <span class="subheading font-weight-light mr-1">steps2</span>
+                <span class="subheading font-weight-light mr-1">pos[2]</span>
                 <v-fade-transition>
                   <v-avatar
                     v-if="isOn"
-                    color="red"
                     :style="{
                       animationDuration: animationDuration
                     }"
                     class="mb-1 v-avatar--metronome"
+                    color="red"
                     size="6"
                   />
                 </v-fade-transition>
@@ -90,12 +169,12 @@
               <v-col class="text-right" />
             </v-row>
             <v-slider
-              v-model="steps2"
-              color="#005db5"
-              track-color="grey"
+              v-model="pos[2]"
               always-dirty
-              min="0"
+              color="#005db5"
               max="1024"
+              min="0"
+              track-color="grey"
               @mouseup="post_duration"
             >
               <template #prepend>
@@ -125,8 +204,8 @@
 <script>
 export default {
   data: () => ({
-    steps1: 120,
-    steps2: 120,
+    pos: [44, 55, 66],
+
     interval: null,
     isOn: false,
   }),
@@ -134,7 +213,7 @@ export default {
   computed: {
     animationDuration (which) {
 
-      return which==1?  `${30 / this.steps1}s`:  `${30 / this.steps2}s`
+      return `${30 / this.pos[which]}s`
     },
   },
 
@@ -169,21 +248,15 @@ export default {
       //   })
     },
     decrement (which) {
-      if (which==1) {
-        this.steps1--
-      }else {
-        this.steps1--
-      }
+      this.pos[which]--
       this.post_duration(which)
     },
+    test1 () {
+      console.log("button")
+    },
     increment (which) {
-      if (which==1) {
-        this.steps1++
-      } else
-      {
-        this.steps2++
-      }
-      this.post_duration()
+      this.pos[which]++
+      this.post_duration(which)
     },
     toggle () {
       this.isOn = !this.isOn

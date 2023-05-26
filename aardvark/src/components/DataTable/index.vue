@@ -4,17 +4,7 @@
 
     <v-form>
       <slot name="search" />
-
-      <div class="d-flex flex-row pb-1 px-2">
-        <slot name="actions" />
-        <v-spacer />
-        <v-btn class="mr-2" depressed tile type="submit" @click.stop.prevent="refresh(true)">
-          Inquire
-        </v-btn>
-        <v-btn depressed tile @click="refresh()">
-          refresh
-        </v-btn>
-      </div>
+      <slot name="headerButtons" />
     </v-form>
 
     <div :style="{ position: 'relative' }" class="flex-grow-1 overflow-hidden">
@@ -111,6 +101,7 @@ export default {
       try {
         this.loading = true
         const {items, total} = await this.loadData(Object.assign(this.options, payload))
+
         Object.assign(this, {items, total})
         await this.$nextTick()
         await this.scrollToTop()

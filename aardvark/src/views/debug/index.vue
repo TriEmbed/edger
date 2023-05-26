@@ -47,6 +47,7 @@ export default {
       await getMenus(null)
     },
 
+
     testGetInfo () {
 
       store.dispatch(`esp/${EspMutations.ESP_FUNCTION}`, ["cat"])

@@ -31,14 +31,14 @@ packageAdaptor.onPost(/api\/login/).reply(config => {
     menus: [
 
       buildMenuItem("home", "home", false, "/home", [], 'VIEW', 'home/index'),
-      buildMenuItem("Blinker", "home", false, "/esp/Blinker", [], 'VIEW', 'esp/Blinker'),
+      buildMenuItem('interfaces', null, false, '/device/:id', [], 'VIEW', 'interfaces/index'),
       buildMenuItem('Configuration', 'apps', false, '/project', [], 'MENU', '',
         [
           buildMenuItem('project list', null, false, '/project/list', [], 'VIEW', 'project/index'),
           buildMenuItem('device list', null, false, '/device/list', [], 'VIEW', 'device/index'),
         ]),
-      buildMenuItem("graphing", "home", false, "/graphing", [], 'VIEW', 'graphing/index'),
-      buildMenuItem('debug', 'priority_high', false, '/debug/', [], 'VIEW', '', null, '/debug/index'),
+      buildMenuItem("Temperature", "home", false, "/esp/Temperature", [], 'VIEW', 'esp/Temperature'),
+      // buildMenuItem('Chart', 'priority_high', false, '/Chart', [], 'VIEW', '', null, 'Chart'),
       buildMenuItem('404', 'priority_high', true, '404_test', [], 'VIEW', '', null, '/exception/404'),
     ],
   }];
@@ -54,6 +54,7 @@ packageAdaptor.onPost(/api\/login/).reply(config => {
   //
   //   val[1].menus.splice(1 + index, 0, k)
   // })
+  val[1].menus[1]['props'] = true
   return val
 })
 
@@ -65,7 +66,7 @@ const projectItem = (id = 1) => ({
   percent: (Math.random() * 30 + 40).toFixed(0),
   price: (Math.random() * 400 + 100).toFixed(0),
   occupy: Math.random() > 0.5,
-  type: ['Dialog 70004', 'Analog Device', 'STM', 'Graphing', 'Data Collection'][`${Math.abs(Math.random() - 0.5)}`[2]],
+  type: ['Dialog 70004', 'Analog Device', 'STM', 'interface', 'Data Collection'][`${Math.abs(Math.random() - 0.5)}`[2]],
   tags: ['dehumidification', 'blood circulation', 'sleep aid', 'ventilation', 'beauty'][`${Math.abs(Math.random() - 0.5)}`[2]],
   lastModifyTime: (function (d) {
     const Y = d.getFullYear()
@@ -110,7 +111,7 @@ const deviceItem = (id = 1, name) => ({
   percent: (Math.random() * 30 + 40).toFixed(0),
   price: (Math.random() * 400 + 100).toFixed(0),
   occupy: Math.random() > 0.5,
-  type: ['Dialog 70004', 'Analog Device', 'STM', 'Graphing', 'Data Collection'][`${Math.abs(Math.random() - 0.5)}`[2]],
+  type: ['Dialog 70004', 'Analog Device', 'STM', 'interface', 'Data Collection'][`${Math.abs(Math.random() - 0.5)}`[2]],
   tags: ['dehumidification', 'blood circulation', 'sleep aid', 'ventilation', 'beauty'][`${Math.abs(Math.random() - 0.5)}`[2]],
   lastModifyTime: (function (d) {
     const Y = d.getFullYear()

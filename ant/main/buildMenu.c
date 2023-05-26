@@ -1,22 +1,24 @@
-#include <string.h>
-#include <fcntl.h>
 #include "esp_http_server.h"
 #include "esp_system.h"
-#include "esp_log.h"
-#include "esp_vfs.h"
 #include "cJSON.h"
 
+cJSON *devices;
 extern char ip_str[17];
-esp_err_t cors_header (httpd_req_t * req);
+// https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js
+//https://stackoverflow.com/questions/9413737/how-to-append-script-script-in-javascript
+//
 
+esp_err_t cors_header (httpd_req_t * req);
+extern char ip_str[17];
 // here we create a default menu item, the children parameter sets the type,
 // other parameter can be set directly on the return object
 static cJSON *
+// other parameter can be set directly on the return object
 menuItem (const char *text, const char *icon, bool hidden,
 	  const char *resource, cJSON * permissions, const char *to,
 	  cJSON * children)
 {
-  char buf[48];
+  static char buf[128];
 
   cJSON *item = cJSON_CreateObject ();
   sprintf (buf, "http://%s%s", ip_str, to);
@@ -26,6 +28,7 @@ menuItem (const char *text, const char *icon, bool hidden,
   cJSON_AddItemToObject (item, "hidden",
 			 hidden ? cJSON_CreateTrue () : cJSON_CreateFalse ());
   cJSON_AddStringToObject (item, "to", to);
+
   cJSON_AddItemToObject (item, "permissions",
 			 permissions ==
 			 NULL ? cJSON_CreateArray () : permissions);
@@ -35,87 +38,94 @@ menuItem (const char *text, const char *icon, bool hidden,
   if (children)
     cJSON_AddItemToObject (item, "children", children);
 
-//cJSON *par =   cJSON_CreateObject ();
-//cJSON_AddStringToObject(par ,"part" , "asd");
-//cJSON_AddItemToObject(item ,"query",par);
+
   return item;
 }
 
 
-static cJSON *
-createDialog (cJSON * array)
+
+
+static void
+createADT7420Menus (cJSON * array)
 {
-///============================================
-  cJSON *subMenu = cJSON_CreateArray ();
 
-  cJSON_AddItemToArray (subMenu,
-			menuItem ("read", "read", false,
-				  "http://192.168.100.100/api/v1/system/info",
-				  NULL, "q1", NULL));
+  cJSON *ADT7420 = cJSON_CreateArray ();
 
-
-  cJSON_AddItemToArray (subMenu,
-			menuItem ("write", "wire", false,
-				  "http://192.168.100.100/api/v1/system/info",
-				  NULL, "q2", NULL));
+  cJSON_AddItemToArray (ADT7420, menuItem ("Read",	// text
+					   "F",	//icon
+					   false,	// hidden
+					   "ADT7420/file/readFile",	// resource,
+					   NULL,	// permission
+					   "/api/system/v1/ADT7420/read"	// to
+					   , NULL));
 
 
-/*
-* text: 'Project Management',
-* icon: 'apps',
-* hidden: false,
-* to: '/project',
-* permissions: [],
-* type: 'MENU',
-* resource: '', 
-*/
-  cJSON_AddItemToArray (array,
-			menuItem ("dialog2", "dialog", false,
-				  "http://192.168.100.100/api/v1/system/info",
-				  NULL, "q3", subMenu));
-  return array;
+
+  cJSON_AddItemToArray (array, menuItem ("ADT7420",	// text
+					 "R",	//icon
+					 false,	// hidden
+					 "Reneses",	// resource,
+					 NULL,	// permission
+					 "/api/system/v1/write"	// to
+					 , ADT7420));
+
 }
 
 
-static cJSON *
-createI2C (cJSON * array)
+static void
+createHSPPD43aMenus (cJSON * array)
 {
-//************ create a sub menu*********
-/*
-*  text: 'item list',
-*  hidden: false,
-*  to: '/project/list',
-*  permissions: [],
-*  type: 'VIEW'*  resource: 'project/index',
-*/
-  cJSON *subMenu = cJSON_CreateArray ();
+  cJSON *HSPPD43A = cJSON_CreateArray ();
+  cJSON_AddItemToArray (HSPPD43A, menuItem ("Read",	// text
+					    "F",	//icon
+					    false,	// hidden
+					    "ADT7420/file/readFile",	// resource,
+					    NULL,	// permission
+					    "/api/system/v1/HSPPD43A/read"	// to
+					    , NULL));
 
-  cJSON_AddItemToArray (subMenu,
-			menuItem ("scan", "scan", false,
-				  "http://192.168.100.100/api/v1/system/info",
-				  NULL, "q4", NULL));
 
-/*
-* text: 'Project Management',
-* icon: 'apps',
-* hidden: false,
-* to: '/project',
-* permissions: [],
-* type: 'MENU',
-* resource: '', 
-*/
-  cJSON_AddItemToArray (array,
-			menuItem ("i2c", "i2c", false,
-				  "http://192.168.100.100/api/v1/system/info",
-				  NULL, "", subMenu));
-  return array;
+
+  cJSON_AddItemToArray (array, menuItem ("HSPPD43A",	// text
+					 "R",	//icon
+					 false,	// hidden
+					 "HSPPD43A",	// resource,
+					 NULL,	// permission
+					 "/api/system/v1/write"	// to
+					 , HSPPD43A));
+
 }
 
-cJSON *
-createMenus ()
+static void
+createAD9833Menus (cJSON * array)
 {
 
-  cJSON *array = cJSON_CreateArray ();
+  cJSON *AD9833 = cJSON_CreateArray ();
+  cJSON_AddItemToArray (AD9833, menuItem ("Read",	// text
+					  "F",	//icon
+					  false,	// hidden
+					  "ADT7420/file/readFile",	// resource,
+					  NULL,	// permission
+					  "/api/system/v1/AD9833/read"	// to
+					  , NULL));
+
+
+
+  cJSON_AddItemToArray (array, menuItem ("AD9833",	// text
+					 "R",	//icon
+					 false,	// hidden
+					 "AD9833",	// resource,
+					 NULL,	// permission
+					 "/api/system/v1/write"	// to
+					 , AD9833));
+
+}
+
+
+
+static void
+createRenesasMenus (cJSON * array)
+{
 
   cJSON *Renesas = cJSON_CreateArray ();
 
@@ -143,54 +153,46 @@ createMenus ()
 					 "/api/system/v1/write"	// to
 					 , Renesas));
 
+}
+
 /*
-* text: device,
-* icon: 'Esp',
-* hidden: false,
-* to: '/eps',
-* permissions: [],
-* type: 'VIEW',
-* resource: 'home/index',
-*/
-
-
-  // cJSON_AddItemToArray(array,
-  //                      menuItem("info",// text
-  //                               "   I",//icon
-  //                               false,// hidden
-  //                               "esp/info",// resource,
-  //                               NULL,// permission
-  //                               "/api/system/v1/info"// to
-  //                              , NULL));
-
-
+ *I2CM 
+ */
+static void
+createI2CMenus (cJSON * array)
+{
   cJSON *i2c = cJSON_CreateArray ();
   cJSON_AddItemToArray (i2c, menuItem ("scan",	// text
 				       "S",	//icon
 				       false,	// hidden
-				       "esp/scan",	// resource,
+				       "esp/scani2c",	// resource,
 				       NULL,	// permission
 				       "/api/v1/i2c"	// to
 				       , NULL));
 
-  cJSON_AddItemToArray (i2c, menuItem ("read",	// text
-				       "   R",	//icon
+  cJSON_AddItemToArray (i2c, menuItem ("edit",	// text
+				       " R",	//icon
 				       false,	// hidden
-				       "esp/read",	// resource,
+				       "i2c/editi2c",	// resource,
 				       NULL,	// permission
-				       "/api/system/v1/read"	// to
+				       "/api/system/v1/edit"	// to
 				       , NULL));
 
-  cJSON_AddItemToArray (i2c, menuItem ("write",	// text
-				       "   W",	//icon
-				       false,	// hidden
-				       "esp/write",	// resource,
-				       NULL,	// permission
-				       "/api/system/v1/write"	// to
-				       , NULL));
 
-//createI2C( array);
-//createDialog( array);
+
+  // cJSON *endPoints = cJSON_CreateArray ();
+  // createADT7420Menus (endPoints);
+  // createAD9833Menus (endPoints);
+  // createADT7420Menus (endPoints);
+  // cJSON_AddItemToArray (i2c, menuItem ("endPoints",  // text
+  //                     "   W",  //icon
+  //                     false,   // hidden
+  //                     "esp/write",     // resource,
+  //                     NULL,    // permission
+  //                     "/api/system/v1/write"   // to
+  //                     , endPoints));
+
+
   cJSON_AddItemToArray (array, menuItem ("i2c",	// text
 					 "   I",	//icon
 					 false,	// hidden
@@ -198,10 +200,13 @@ createMenus ()
 					 NULL,	// permission
 					 "/api/system/v1/info"	// to
 					 , i2c));
+}
 
+
+static void
+createGPIOMenus (cJSON * array)
+{
   cJSON *gpio = cJSON_CreateArray ();
-
-
 
 
   cJSON_AddItemToArray (gpio, menuItem ("blinky",	// text
@@ -212,6 +217,14 @@ createMenus ()
 					"/api/system/v1/gpio"	// to
 					, NULL));
 
+  cJSON_AddItemToArray (gpio, menuItem ("Lights",	// text
+					"   I",	//icon
+					false,	// hidden
+					"Light",	// resource,
+					NULL,	// permission
+					"/Light"	// to
+					, NULL));
+
   cJSON_AddItemToArray (array, menuItem ("gpio",	// text
 					 "   I",	//icon
 					 false,	// hidden
@@ -219,6 +232,19 @@ createMenus ()
 					 NULL,	// permission
 					 "/api/system/v1/blinker"	// to
 					 , gpio));
+}
 
+
+
+
+cJSON *
+createMenus ()
+{
+
+  cJSON *array = cJSON_CreateArray ();
+
+  createI2CMenus (array);
+  createGPIOMenus (array);
+    createRenesasMenus( array);
   return array;
 }

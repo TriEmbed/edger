@@ -15,6 +15,8 @@ idf_component_register(SRCS "esp_rest_main.c"
         "gpio/gpio.c"
         "gpio/gpioDriver.c"
         "console/console_example_main.c"
+        "ADT7420/ADT7420.c"
+        "hsppad143a/hsppad143a.c"
+        "BMP3XX/BMP3XX.c"
         INCLUDE_DIRS ".")
-
 

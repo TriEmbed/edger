@@ -12,7 +12,7 @@
             <v-card-text>
               <v-text-field
                 v-model="formData.username"
-                :rules="[v => !!v || 'please enter user name']"
+                :rules="[v => !!v || 'please enter user index']"
                 autofocus
                 label="Login"
                 name="login"

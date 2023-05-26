@@ -4,7 +4,7 @@
     <v-btn @click="scani2c">
       scani2c
     </v-btn>
-    <h4> {{infoData}} </h4>
+    <h4> {{ infoData }} </h4>
     <select v-model="mode">
       <option value="csv">
         CSV Editing
@@ -49,7 +49,7 @@ const makeData = () => {
     // fill the top row
     let rows = colIndex < 8 ? [colIndex.toString(16)] : [""]
     for (let rowIndex = 0; rowIndex < 16; rowIndex++) {
-      rows.push(colIndex < 8 ? (colIndex * 16 + rowIndex).toString(16) : "");
+      rows.push(colIndex < 8 ? '0x'+(colIndex * 16 + rowIndex).toString(16) : "");
     }
     val.push(rows)
   }
@@ -58,7 +58,7 @@ const makeData = () => {
 };
 
 export default {
-  name: "App",
+  name: "Scan",
   components: {
     VueGridSheet,
   },
@@ -66,7 +66,7 @@ export default {
   computed: {
 
     infoData: function () {
-      console.log("scan new data",this.$store.state.esp.info);
+      console.log("scan new data", this.$store.state.esp.info);
       return this.$store.state.esp.info.toString()
     },
     gridData () {
@@ -74,17 +74,17 @@ export default {
     },
 
   },
-  watch:{
+  watch: {
     // this
-    '$store.state.esp.scan': function(scans){
+    '$store.state.esp.scan': function (scans) {
+      this.$refs.grid. clearSelection () ;
       scans.forEach(k => {
         const x = k % 16, y = k >> 4;
-        this.$refs.grid.setDataAt(x + 1, y, k.toString(16));
+        this.$refs.grid.setDataAt(x + 1, y, +k.toString(10));
       })
     },
   },
-  test()
-  {
+  test () {
 
   },
 
@@ -134,8 +134,8 @@ export default {
   },
   methods: {
     scani2c: function (event) {
-      this.demoBasic.data= makeData();
-      getPatch({info: '', scan: ''},{})
+      this.demoBasic.data = makeData();
+      getPatch({info: '', scan: ''}, {})
 
 
     },
