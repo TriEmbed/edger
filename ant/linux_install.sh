@@ -1,9 +1,12 @@
 #!/bin/bash 
-# Hack Edger onto a Linux system. Currently just handles Ubuntu.
+# Install tools and prepare for building edger/ant
 
 # Here is an important todo: This script needs to detect changes to the edger repo and rebuild ant and aardvark as needed
 
 # The Espressif docs have the recipes for package installs for other Linux flavors
+
+# Changes:
+# 5/26/2023 - Add options for specifying WIFI userid and password
 
 ## default values for optional arguments
 EDGER_DIR_DEFAULT=$HOME/workspace/esp32/edger
