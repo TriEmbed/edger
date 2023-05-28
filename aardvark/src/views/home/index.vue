@@ -304,14 +304,14 @@ export default {
           'document.dispatchEvent(event);' +
           '})\n');
 
-      navigator.usb.getDevices().then((devices) => {
-        console.log(`Total devices: ${devices.length}`);
-        devices.forEach((device) => {
-          console.log(
-            `Product index: ${device.productName}, serial number ${device.serialNumber}`,
-          );
-        });
-      });
+//      navigator.usb.getDevices().then((devices) => {
+//        console.log(`Total devices: ${devices.length}`);
+//        devices.forEach((device) => {
+//          console.log(
+//            `Product index: ${device.productName}, serial number ${device.serialNumber}`,
+//          );
+//        });
+//      });
 
       document.addEventListener("index-of-event", function (e) {
         console.log("2", e.detail); // Prints "Example of an event"
