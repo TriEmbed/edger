@@ -31,14 +31,14 @@ packageAdaptor.onPost(/api\/login/).reply(config => {
     menus: [
 
       buildMenuItem("home", "home", false, "/home", [], 'VIEW', 'home/index'),
-      // buildMenuItem('interfaces', null, false, '/device/:id', [], 'VIEW', 'interfaces/index'),
-      buildMenuItem('Configuration', 'apps', false, '/project', [], 'MENU', '',
+      ... store.state.setting.appHideBroken ? [] : [buildMenuItem('interfaces', null, false, '/device/:id', [], 'VIEW', 'interfaces/index')],
+      ... true ? [] : [buildMenuItem('Configuration', 'apps', false, '/project', [], 'MENU', '',
         [
-          //buildMenuItem('project list', null, false, '/project/list', [], 'VIEW', 'project/index'),
-          buildMenuItem('device list', null, false, '/device/list', [], 'VIEW', 'device/index'),
-        ]),
+          ... true ? [] : [buildMenuItem('project list', null, false, '/project/list', [], 'VIEW', 'project/index')],
+          ... true ? [] : [buildMenuItem('device list', null, false, '/device/list', [], 'VIEW', 'device/index')],
+        ])],
       buildMenuItem("Temperature", "home", false, "/esp/Temperature", [], 'VIEW', 'esp/Temperature'),
-      // buildMenuItem('Chart', 'priority_high', false, '/Chart', [], 'VIEW', '', null, 'Chart'),
+      ... true ? [] : [buildMenuItem('Chart', 'priority_high', false, '/Chart', [], 'VIEW', '', null, 'Chart')],
       buildMenuItem('404', 'priority_high', true, '404_test', [], 'VIEW', '', null, '/exception/404'),
     ],
   }];

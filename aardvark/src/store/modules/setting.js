@@ -6,6 +6,7 @@ export const SettingMutations = {
   TOGGLE_APP_SETTING: 'TOGGLE_APP_SETTING',
   TOGGLE_APP_THEME_DARK: 'TOGGLE_APP_THEME_DARK',
   TOGGLE_APP_MULTIPLE_TABS: 'TOGGLE_APP_MULTIPLE_TABS',
+  TOGGLE_APP_HIDE_BROKEN: 'TOGGLE_APP_HIDE_BROKEN',
 }
 
 export const SettingActions = {
@@ -44,6 +45,9 @@ export default {
     },
     [SettingMutations.TOGGLE_APP_MULTIPLE_TABS] (state) {
       state.appMultipleTabs = !state.appMultipleTabs
+    },
+    [SettingMutations.TOGGLE_APP_HIDE_BROKEN] (state) {
+      state.appHideBroken = !state.appHideBroken
     },
   },
 }

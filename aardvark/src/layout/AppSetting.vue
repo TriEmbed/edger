@@ -23,6 +23,18 @@
         <v-layout column>
           <v-flex>
             <v-subheader class="px-1 my-2">
+              Developer Mode Settings
+            </v-subheader>
+            <v-switch
+              :input-value="appHideBroken"
+              color="primary"
+              label="Hide broken components"
+              @change="toggleAppHideBroken"
+            />
+          </v-flex>
+
+          <v-flex>
+            <v-subheader class="px-1 my-2">
               Navigation bar settings
             </v-subheader>
             <v-switch
