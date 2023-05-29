@@ -34,7 +34,7 @@ packageAdaptor.onPost(/api\/login/).reply(config => {
       // buildMenuItem('interfaces', null, false, '/device/:id', [], 'VIEW', 'interfaces/index'),
       buildMenuItem('Configuration', 'apps', false, '/project', [], 'MENU', '',
         [
-          buildMenuItem('project list', null, false, '/project/list', [], 'VIEW', 'project/index'),
+          //buildMenuItem('project list', null, false, '/project/list', [], 'VIEW', 'project/index'),
           buildMenuItem('device list', null, false, '/device/list', [], 'VIEW', 'device/index'),
         ]),
       buildMenuItem("Temperature", "home", false, "/esp/Temperature", [], 'VIEW', 'esp/Temperature'),
