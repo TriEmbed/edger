@@ -111,6 +111,7 @@ fi
 echo "==> Install the prerequisite packages"
 # python3, libusb-1.0-0, wget installed already on 20.04 and 22.04
 # python3-venv and python3-pip will install python3 as dep if needed
+sudo apt-get -q -q -y update
 sudo apt-get install -q -q -y \
   git  \
   python3-venv python3-pip \

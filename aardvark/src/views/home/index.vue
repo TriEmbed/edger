@@ -319,7 +319,8 @@ export default {
     };
 
     onActivated(async () => {
-      testEvent()
+// not sure why this is needed, and it causes uncaught exceptions in navigator.usb.getDevices() above
+//      testEvent()
 
       const event = new CustomEvent("index-of-event", {"detail": "Example of an event"});
       // Dispatch/Trigger/Fire the event
