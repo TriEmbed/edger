@@ -11,12 +11,12 @@ const persistence = new VuexPersistence({
   reducer: ({
     account,
     devices,
-    setting: {appPermanentNavigation, appPrimaryColor, appThemeDark, appMultipleTabs},
+    setting: {appPermanentNavigation, appPrimaryColor, appThemeDark, appMultipleTabs, appShowHidden},
   }) => {
     return ({
       account,
       devices,
-      setting: {appPermanentNavigation, appPrimaryColor, appThemeDark, appMultipleTabs},
+      setting: {appPermanentNavigation, appPrimaryColor, appThemeDark, appMultipleTabs, appShowHidden},
     });
   },
 })

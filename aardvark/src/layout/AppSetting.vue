@@ -26,10 +26,10 @@
               Developer Mode Settings
             </v-subheader>
             <v-switch
-              :input-value="appHideBroken"
+              :input-value="appShowHidden"
               color="primary"
-              label="Hide broken components"
-              @change="toggleAppHideBroken"
+              label="Show hidden components"
+              @change="toggleAppShowHidden"
             />
           </v-flex>
 

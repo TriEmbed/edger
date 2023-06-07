@@ -9,6 +9,7 @@ export default {
     const {
       $store, $vuetify, appPermanentNavigation,
       appNavigation, $refs, toggleAppNavigation,
+      appShowHidden,
     } = this
     return (
       <v-navigation-drawer
@@ -21,7 +22,7 @@ export default {
           $refs.drawer.isActive !== appNavigation && toggleAppNavigation()
         }}
       >
-        <RecursiveMenus items={$store.state.account.menus}/>
+        <RecursiveMenus items={$store.state.account.menus} showHidden={appShowHidden}/>
       </v-navigation-drawer>
     )
   },
