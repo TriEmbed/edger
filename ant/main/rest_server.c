@@ -301,7 +301,7 @@ static commandPath[] = {
 
 
 esp_err_t start_rest_server(const char *base_path) {
-    led_main(160, 160, 160);
+    led_main(10, 0, 0);
 
     REST_CHECK (base_path, "wrong base path", err);
     rest_server_context_t *rest_context = calloc(1, sizeof(rest_server_context_t));

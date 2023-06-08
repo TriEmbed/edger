@@ -136,15 +136,14 @@ createRenesasMenus (cJSON * array)
 					   NULL,	// permission
 					   "/api/system/v1/renesas/read"	// to
 					   , NULL));
-/* v0.1.0 not implemented in Aardvark
+// v0.1.0 not implemented in Aardvark - hidden
   cJSON_AddItemToArray (Renesas, menuItem ("BuzyBox",	// text
 					   "O",	//icon
-					   false,	// hidden
+					   true,	// hidden
 					   "Renesas/buzybox",	// resource,
 					   NULL,	// permission
 					   "/api/system/v1/rensas/buzybox"	// to
 					   , NULL));
-*/
   cJSON_AddItemToArray (array, menuItem ("Renesas",	// text
 					 "R",	//icon
 					 false,	// hidden
@@ -169,15 +168,14 @@ createI2CMenus (cJSON * array)
 				       NULL,	// permission
 				       "/api/v1/i2c"	// to
 				       , NULL));
-/* v0.1.0 not implemented in Aardvark
+// v0.1.0 not implemented in Aardvark - hidden
   cJSON_AddItemToArray (i2c, menuItem ("edit",	// text
 				       " R",	//icon
-				       false,	// hidden
+				       true,	// hidden
 				       "i2c/editi2c",	// resource,
 				       NULL,	// permission
 				       "/api/system/v1/edit"	// to
 				       , NULL));
-*/
 
 
   // cJSON *endPoints = cJSON_CreateArray ();
@@ -208,15 +206,14 @@ createGPIOMenus (cJSON * array)
 {
   cJSON *gpio = cJSON_CreateArray ();
 
-/* v0.1.0 - not implemented in Aardvark
+// v0.1.0 - not implemented in Aardvark - hidden
   cJSON_AddItemToArray (gpio, menuItem ("blinky",	// text
 					"   I",	//icon
-					false,	// hidden
+					true,	// hidden
 					"esp/Blinker",	// resource,
 					NULL,	// permission
 					"/api/system/v1/gpio"	// to
 					, NULL));
-*/
   cJSON_AddItemToArray (gpio, menuItem ("Lights",	// text
 					"   I",	//icon
 					false,	// hidden
