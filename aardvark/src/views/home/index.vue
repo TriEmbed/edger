@@ -1,6 +1,6 @@
 <template ref="here">
   <div>
-    <v-toolbar flat="true" height="30" />
+    <v-toolbar flat height="30" />
     <h4 id="scanned">
       looking for device on local network
     </h4>

@@ -20,21 +20,21 @@
               <v-text-field
                 v-model="formData.i2CAddress"
                 label="i2c Address"
-                readonly="true"
+                readonly
               />
             </v-col>
             <v-col cols="3">
               <v-text-field
                 v-model="formData.IP"
                 label="IP Address"
-                readonly="true"
+                readonly
               />
             </v-col>
             <v-col cols="3">
               <v-text-field
                 v-model="formData.i2cRegister"
                 label="i2cRegister"
-                readonly="true"
+                readonly
               />
             </v-col>
           </v-row>
@@ -66,21 +66,21 @@
               <v-text-field
                 v-model="formData.DEVICEINSTANCEFeatures"
                 label="Features"
-                readonly="true"
+                readonly
               />
             </v-col>
             <v-col cols="4">
               <v-text-field
                 v-model="formData.MinimumFreeHeapSize"
                 label="Minimum Free Heap Size"
-                readonly="true"
+                readonly
               />
             </v-col>
             <v-col cols="4">
               <v-text-field
                 v-model="formData.FreeHeapSize"
                 label="Free Heap Size"
-                readonly="true"
+                readonly
               />
             </v-col>
           </v-row>
@@ -89,7 +89,7 @@
               <v-text-field
                 v-model="formData.Time"
                 label="RTC current Time"
-                readonly="true"
+                readonly
               />
             </v-col>
           </v-row>
@@ -99,7 +99,7 @@
               <v-text-field
                 v-model="formData.ResetReason"
                 label="Reset Reason"
-                readonly="true"
+                readonly
               />
             </v-col>
           </v-row>
@@ -108,21 +108,21 @@
               <v-text-field
                 v-model="formData.CompileDate"
                 label="Value"
-                readonly="true"
+                readonly
               />
             </v-col>
             <v-col cols="2">
               <v-text-field
                 v-model="formData.DeviceType"
                 label="Compile Time"
-                readonly="true"
+                readonly
               />
             </v-col>
             <v-col cols="6">
               <v-text-field
                 v-model="formData.IDFVersion"
                 label="IDF Version"
-                readonly="true"
+                readonly
               />
             </v-col>
           </v-row>
