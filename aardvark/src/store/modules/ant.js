@@ -14,6 +14,9 @@ export default {
 
     [AntMutations.ANTS] (state, routes = []) {
 
+      if (routes === null) { // gets called with null routes, causing null error
+        return
+      }
       for (const id of state.antList) {
         if (id['MAC'] === routes['MAC']) {
           return
