@@ -330,7 +330,8 @@ export default {
         loop = 0;
         scanMDNSAddress()
       }, delayTime)
-      this.componentKey += 1
+// this is not defined in functions defined with '=>' (https://v2.vuejs.org/v2/guide/instance.html#Data-and-Methods)
+//      this.componentKey += 1
     },
     )
   },
