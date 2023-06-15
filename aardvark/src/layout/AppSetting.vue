@@ -23,6 +23,18 @@
         <v-layout column>
           <v-flex>
             <v-subheader class="px-1 my-2">
+              Developer Mode Settings
+            </v-subheader>
+            <v-switch
+              :input-value="appShowHidden"
+              color="primary"
+              label="Show hidden components"
+              @change="toggleAppShowHidden"
+            />
+          </v-flex>
+
+          <v-flex>
+            <v-subheader class="px-1 my-2">
               Navigation bar settings
             </v-subheader>
             <v-switch

@@ -109,7 +109,12 @@ if [[ $INSTALL != 'true' ]]; then
 fi
 
 echo "==> Install the prerequisite packages"
-#sudo apt-get install -q -q -y git wget flex bison gperf python3 python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0 python3-pip curl
+sudo apt-get update -q -q -y
+sudo apt-get install -q -q -y git curl
+if [[ $? -ne 0 ]]; then
+  echo "failed to install packages"
+  exit 1
+fi
 
 echo "==> checking/cloning Edger repo in $EDGER_DIR"
 # Fetch the Edger repo
@@ -206,16 +211,6 @@ echo "==> building aardvark"
 pnpm install
 if [ $? -ne 0 ] ; then
   echo "pnpm install failed"
-  exit 1
-fi
-pnpm run build
-if [ $? -ne 0 ] ; then
-  echo "pnpm run build failed"
-  exit 1
-fi
-pnpm build
-if [ $? -ne 0 ] ; then
-  echo "pnpm build failed"
   exit 1
 fi
 

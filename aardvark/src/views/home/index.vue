@@ -1,6 +1,6 @@
 <template ref="here">
   <div>
-    <v-toolbar flat="true" height="30" />
+    <v-toolbar flat height="30" />
     <h4 id="scanned">
       looking for device on local network
     </h4>
@@ -330,7 +330,8 @@ export default {
         loop = 0;
         scanMDNSAddress()
       }, delayTime)
-      this.componentKey += 1
+// this is not defined in functions defined with '=>' (https://v2.vuejs.org/v2/guide/instance.html#Data-and-Methods)
+//      this.componentKey += 1
     },
     )
   },
