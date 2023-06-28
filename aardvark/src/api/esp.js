@@ -18,7 +18,7 @@ const endPoints = {
 export let deviceLists = []
 //
 const openDevice = (name) => {
-  const address = "http://" + name + ".local"
+  const address = "http://" + name
   return axios.create({
     baseURL: address, timeout: 1000, responseType: "json", mode: "no_cors", headers: {},
   });

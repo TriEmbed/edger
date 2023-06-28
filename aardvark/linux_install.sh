@@ -207,10 +207,20 @@ export NVM_DIR="$HOME/.nvm"
 # with file mod dates.
 
 cd $EDGER_DIR/aardvark
-echo "==> building aardvark"
+echo "==> installing Aardvark"
 pnpm install
 if [ $? -ne 0 ] ; then
   echo "pnpm install failed"
+  exit 1
+fi
+
+# An aardvark/dist directory is built so the javascript can be accessed
+# directly by a browser with a local file URL
+
+echo "==> building Aardvark"
+pnpm vue-cli-service build --mode development
+if [ $? -ne 0 ] ; then
+  echo "pnpm build failed"
   exit 1
 fi
 
