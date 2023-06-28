@@ -2,7 +2,7 @@
   <div>
     <v-toolbar flat height="30" />
     <h1>
-      Nick's version
+      Edger 0.1.0
     </h1>
 
 
