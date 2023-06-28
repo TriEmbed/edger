@@ -209,6 +209,7 @@ export const getMenus = function (ip = {}) {
     newTopItem.path = "/esp/i2c"
     newTopItem.name = "cat"
     newTopItem.type = 'MENU'
+    newTopItem.temporary=true
     newTopItem.to = "/device"
     newTopItem.children = response.data.menus
     menuToSpliceIn.splice(1, 0, newTopItem)

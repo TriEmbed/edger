@@ -1,12 +1,32 @@
 <template ref="here">
   <div>
     <v-toolbar flat height="30" />
-    <h4 id="scanned">
-      looking for device on local network
-    </h4>
-    <h5 style="visibility: hidden;">
-      {{ show }}// hack alert: necessary to update devices
-    </h5>
+    <h1>
+      Nick's version
+    </h1>
+
+
+    <div>
+      <h4 v-if="!production">
+        development
+      </h4>
+      <h4 v-else>
+        Production
+      </h4>
+    </div>
+    <span v-show="! showRescanButton"> {{ message }}</span>
+
+    <div v-if="showRescanButton && production">
+      <VueIp :ip="ip" :on-change="change" :port="port" />
+      <v-btn />
+      <v-btn @click="Add">
+        add
+      </v-btn>
+    </div>
+    <v-btn v-if="showRescanButton" @click="reScan">
+      scani2c
+    </v-btn>
+
     <DataTable
       :key="componentKey"
       ref="table"
@@ -39,6 +59,14 @@
           </template>
           <span>information</span>
         </v-tooltip>
+        <v-tooltip v-if="production" id="delete">
+          <template #activator="{ on, attrs }">
+            <v-icon class="mr-4" color="blue darken-3" v-bind="attrs" @click="handleDelete(item)" v-on="on">
+              delete
+            </v-icon>
+          </template>
+          <span>delete</span>
+        </v-tooltip>
       </template>
     </DataTable>
 
@@ -60,97 +88,49 @@ import AntSchema from "@/views/home/modules/AntSchema.vue";
 import {getInfo, getMenus} from "@/api/esp";
 import store from "@/store";
 import {AntMutations} from "@/store/modules/ant";
-import {onActivated} from "vue";
-import {toInteger} from "lodash-es";
-
-let loop = -1
-const loopMax = 30
-const delayTime = 2000;
-let mdnsNamesIndex = 0
-let address = "Cat"
-const scanMDNSAddress = () => {
-// Get all connected USB devices the website has been granted access to.
-//   navigator.usb.getDevices().then(devices => {
-//     devices.forEach(device => {
-//       console.log(device.productName);      // "Arduino Micro"
-//       console.log(device.manufacturerName); // "Arduino LLC"
-//     });
-//   }).
+import VueIp from "@/components/VueIp.vue";
+import cookies from "vue-cookies";
 
 
-  /* here we look for any esp32 that may be out there
- */
-  const mdnsNames = ["esp-home"]
+import {ref} from 'vue';
 
-  const infoRequest = "/api/v1/system/info"
-  // loop being -1 means stop
-  if (loop === -1) {
-    return
-  }
-  if (loop > loopMax) {
-    if (mdnsNamesIndex >= mdnsNames.length - 1) {
-      return;
-    }
-    mdnsNamesIndex++;
-    loop = 0
-  }
-  let pass = toInteger(loop / 3)
-
-  let mdnsName = mdnsNames[mdnsNamesIndex];
-  if (loop == 0) {
-    store.dispatch(`ants/${AntMutations.ANTS}`, null)
-    loop = 0;
-
-  } else {
-    if (pass != 0) {
-      mdnsName += "-" + pass
-    }
-  }
-  loop++;
-  // and the number to the address
-  // not necessary for the first one
-  address = mdnsName
-
-  var s = document.getElementById('scanned');
-  s.innerText = "looking for device on network " + mdnsName + ".local pass " + toInteger(loop % 3)
-  axios.defaults.baseURL = "http://" + mdnsName + ".local";
-  console.log("looking for", axios.defaults.baseURL)
-
-  axios.get('/api/v1/system/info', {timeout: 1000})
-    .then(response => {
-      loop = 3 * toInteger((loop + 3) / 3)
-      console.log("found", mdnsName)
-
-      response.data["mdnsName"] = mdnsName
-      store.dispatch(`ants/${AntMutations.ANTS}`, response.data).then(r => {
-        console.log(axios.defaults.baseURL, response.data)
-      }).catch((error) => {
-        console.log("mutation error", error)
-      })
-    }).catch((error) => {
-      console.log("not found", mdnsName)
-    }).finally(() => {
-
-      setTimeout(() => {
-        scanMDNSAddress()
-      }, 1000)
-    })
-
-
-};
+const componentKey = ref(0);
 
 export default {
   name: 'Home',
   components: {
+    VueIp,
     AntSchema,
-  },
-  computed: {
-    show () {
-      const data = this.$store.state.ants.antList
-      if (data.length !== 0)
-        this.forceRerender()
-      return address
+  }
+  ,
+  data: () => ({
+    items: [{title: 'rescan', action: "scanMDNSAddress"}],
+
+    query: {
+      name: '',
     },
+    msg: "",
+    pass: 0,
+    showRescan: true,
+    production: false,
+    index: -1,
+    componentKey: 0,
+    searchList: null,
+    ip: '127.0.0.1', // or null
+    port: '8888', // or null
+  }),
+
+
+  computed: {
+    showRescanButton: function () {
+      return this.showRescan
+    },
+
+    message: function () {
+      return this.msg;
+    },
+
+
     infoData () {
       return "hello";
 
@@ -160,13 +140,68 @@ export default {
     },
   },
 
-  data: () => ({
-    items: [{title: 'rescan', action: "scanMDNSAddress"}],
-    componentKey: 0,
-    query: {
-      name: '',
-    },
-  }),
+  mounted () {
+    // if (process.env.NODE_ENV === "development") {
+    //   let k = document.getElementById("idEnter")
+    //   k.style.visibility = "hidden";
+    //   k = document.getElementById("idValue")
+    //   k.style.visibility = "hidden";
+    // }
+    // if (process.env.NODE_ENV === "development") {
+    //   console.log("development")
+    // }
+    // if (process.env.NODE_ENV === "production") {
+    //   console.log("production")
+    // }
+    this.production = process.env.NODE_ENV === "production"
+    this.production = false
+    if (!this.production) {
+      console.log("development")
+
+      this.searchList = ["esp-home.local",
+        "esp-home-1.local",
+        "esp-home-2.local",
+        "esp-home-3.local",
+        "esp-home-4.local",
+        "esp-home-5.local",
+        "esp-home-6.local",
+        "esp-home-7.local",
+        "esp-home-8.local",
+        "esp-home-9.local",
+        "esp-home-10.local",
+        "esp-home-11.local",
+        "esp-home-12.local",
+        "esp-home-13.local",
+        "esp-home-14.local",
+        "esp-home-15.local",
+        "esp-home-16.local",
+        "esp-home-17.local",
+        "esp-home-18.local",
+        "esp-home-19.local",
+      ];
+    } else {
+
+      console.log("production")
+      const ip = cookies.get("ESP");
+      this.searchList = JSON.parse(ip);
+    }
+
+    console.log('mounted called!')
+  },
+
+  beforeMount () {
+    console.log('beforeMount called!')
+  },
+
+  destroyed () {
+    console.log('destroyed called!')
+  },
+
+  beforeDestroy () {
+    console.log('beforeDestroy called!')
+  },
+
+
   async loadGetInfo () {
     await getInfo(null)
   },
@@ -174,28 +209,129 @@ export default {
     //  await getMenus(null)
   },
   methods: {
-    forceRerender () {
-      this.componentKey += 1;
+
+    /**
+     * Will be called on changes to IP address or port
+     */
+    change (ip, port, valid) {
+      this.ip = ip.toString()
+      console.log(ip, port, valid);
     },
+
+    Add () {
+      const searchList = this.ip;
+      const ip = cookies.get("ESP");
+      console.log(ip)
+      var array
+      if (ip) {
+        array = JSON.parse(ip)
+        if (array.indexOf(searchList) != -1) {
+          return;
+        }
+      } else {
+        array = []
+      }
+
+
+      console.log(this.ip)
+      array.push(this.ip)
+      console.log(JSON.stringify(array))
+      this.searchList = array;
+      cookies.set("ESP", JSON.stringify(array), 100000)
+
+
+    },
+    scanMDNSAddress (index) {
+      // Get all connected USB devices the website has been granted access to.
+      //   navigator.usb.getDevices().then(devices => {
+      //     devices.forEach(device => {
+      //       console.log(device.productName);      // "Arduino Micro"
+      //       console.log(device.manufacturerName); // "Arduino LLC"
+      //     });
+      //   }).
+
+
+      /* here we look for any esp32 that may be out there
+     */
+
+
+      // loop being -1 means stop
+      if ((index === -1) || (index >= this.searchList.length)) {
+        index = -1
+        this.showRescan = true;
+        return
+      }
+
+
+      if (index === 0) {
+        store.dispatch(`ants/${AntMutations.ANTS}`, null)
+
+      }
+
+      // and the number to the address
+      // not necessary for the first one
+      const address = this.searchList[index]
+      if (this.pass === 3) {
+        this.pass = 0
+        index++;
+      } else {
+        this.pass++
+      }
+
+      this.msg = "mDNS Scanning for " + address + " pass " + this.pass
+
+      axios.defaults.baseURL = "http://" + address;
+
+      console.log("looking for", axios.defaults.baseURL)
+
+      axios.get('/api/v1/system/info', {timeout: 200})
+        .then(response => {
+          this.pass = 0
+          index++
+          console.log("found", address)
+
+          response.data["mdnsName"] = address
+          store.dispatch(`ants/${AntMutations.ANTS}`, response.data).then(r => {
+            console.log(axios.defaults.baseURL, response.data)
+            this.componentKey++
+          }).catch((error) => {
+            console.log("mutation error", error)
+          })
+        }).catch(() => {
+          console.log("not found", address)
+        }).finally(() => {
+
+          setTimeout(() => {
+            this.scanMDNSAddress(index)
+          }, 100)
+        })
+    },
+
+
     loadData: async function (options = {}) {
       return new Promise((resolve) => {
-        const data = this.$store.state.ants.antList
+        try {
+          const data = this.$store.state.ants.antList
 
-        let dataLength = data.length
+          let dataLength = data.length
 
-        if (dataLength === 0)
-          return ({items: [], total: 0})
-        dataLength = data.length
-        console.log("scan new data", JSON.stringify(data[dataLength]));
-        //     this.$refs['table'].refresh(true)
-        resolve({items: data, total: dataLength})
+          if (dataLength === 0)
+            return ({items: [], total: 0})
+          dataLength = data.length
+          console.log("scan new data", JSON.stringify(data[dataLength]));
+          //     this.$refs['table'].refresh(true)
+          resolve({items: data, total: dataLength})
+        }catch (error)
+        {
+  console.log((error))
+        }
       })
     },
-    action (index) {
-      // this.items[index].action()
-      //console.log(index)
-    },
-    //
+    // action (index) {
+    //   // this.items[index].action()
+    //   //console.log(index)
+    // },
+    // //
     // /**
     //  * Added items
     //  * @return {Undefined}
@@ -216,10 +352,14 @@ export default {
     /**
      * Added items
      * @return {Undefined}
+     * * here
      */
     reScan () {
       store.dispatch(`ants/${AntMutations.ANTS}`, null)
-      scanMDNSAddress()
+      this.index = 0;
+      this.pass = 0
+      this.showRescan = false
+      this.scanMDNSAddress(this.index)
     },
     /**
      * Added device successfully
@@ -232,8 +372,8 @@ export default {
     },
     /**
      * Edit item
-     * @param {Number | String} id item id
      * @return {Undefined}
+     * @param item
      */
     handleEdit (item) {
 
@@ -242,10 +382,11 @@ export default {
 
       this.$refs['antSchema'].open(item)
     },
+
     /**
      * connect item
-     * @param {Number | String} id item id
      * @return {Undefined}
+     * @param item
      */
     handleConnect (item) {
 
@@ -287,53 +428,6 @@ export default {
     },
 
 
-  },
-
-  setup: function () {
-
-
-    const testEvent = () => {
-      // event handler
-      document.addEventListener("index-of-event2", function (e) {
-        console.log("3", e.detail); // Prints "Example of an event"
-      });
-
-      eval('document.addEventListener("index-of-event", function(e) {\n' +
-          'console.log("1",e.detail); // Prints "Example of an event"\n' +
-          'const event = new CustomEvent("index-of-event2", {"detail": "Example of an event"});' +
-          'document.dispatchEvent(event);' +
-          '})\n');
-
-      navigator.usb.getDevices().then((devices) => {
-        console.log(`Total devices: ${devices.length}`);
-        devices.forEach((device) => {
-          console.log(
-            `Product index: ${device.productName}, serial number ${device.serialNumber}`,
-          );
-        });
-      });
-
-      document.addEventListener("index-of-event", function (e) {
-        console.log("2", e.detail); // Prints "Example of an event"
-      });
-    };
-
-    onActivated(async () => {
-// not sure why this is needed, and it causes uncaught exceptions in navigator.usb.getDevices() above
-//      testEvent()
-
-      const event = new CustomEvent("index-of-event", {"detail": "Example of an event"});
-      // Dispatch/Trigger/Fire the event
-      document.dispatchEvent(event);
-
-      setTimeout(() => {
-        loop = 0;
-        scanMDNSAddress()
-      }, delayTime)
-// this is not defined in functions defined with '=>' (https://v2.vuejs.org/v2/guide/instance.html#Data-and-Methods)
-//      this.componentKey += 1
-    },
-    )
   },
 
 

@@ -33,7 +33,7 @@
           <slot :name="slot" v-bind="scope" />
         </template>
       </v-data-table>
-      <VLoading :value="loading" absolute />
+<!--      <VLoading :value="loading" absolute />-->
     </div>
   </div>
 </template>
