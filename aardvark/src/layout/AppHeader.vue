@@ -16,7 +16,6 @@
         />
       </v-expand-x-transition>
     </v-toolbar-title>
-    <v-spacer />
     <span>{{ title }}</span>
     <v-spacer />
     <v-tooltip bottom>
