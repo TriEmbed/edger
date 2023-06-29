@@ -23,8 +23,10 @@
         add
       </v-btn>
     </div>
-    <v-btn v-if="showRescanButton" @click="reScan">
-      scani2c
+    <v-btn 
+      v-if="showRescanButton" 
+      @click="reScan">
+      scan for ant ESPs
     </v-btn>
 
     <DataTable
