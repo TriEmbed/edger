@@ -1,35 +1,17 @@
 <template>
   <v-container>
     <v-layout text-xs-center wrap>
-      <v-flex offset-sm3 sm6 xs12>
-        <v-card>
-          <v-responsive :style="{ background: `rgb(${red}, ${green}, ${blue})` }" height="300px" />
-          <v-card-text>
-            <v-container fluid grid-list-lg>
-              <v-layout row wrap>
-                <v-flex xs9>
-                  <v-slider v-model="red" :max="255" label="R" @input="set_color" />
-                </v-flex>
-                <v-flex xs3>
-                  <v-text-field v-model="red" class="mt-0" type="number" />
-                </v-flex>
-                <v-flex xs9>
-                  <v-slider v-model="green" :max="255" label="G" @input="set_color" />
-                </v-flex>
-                <v-flex xs3>
-                  <v-text-field v-model="green" class="mt-0" type="number" />
-                </v-flex>
-                <v-flex xs9>
-                  <v-slider v-model="blue" :max="255" label="B" @input="set_color" />
-                </v-flex>
-                <v-flex xs3>
-                  <v-text-field v-model="blue" class="mt-0" type="number" />
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-flex>
+      <v-card>
+        <v-color-picker 
+          class="ma-2"
+          v-model="color"
+          canvas-height=300
+          hide-mode-switch
+          hide_inputs
+          :show-swatches="false"
+          @input="set_color"
+        />
+      </v-card>
     </v-layout>
   </v-container>
 </template>
@@ -39,10 +21,14 @@ import axios from "axios";
 
 export default {
   data () {
-    return {red: 160, green: 160, blue: 160};
+    return {color: '#001000', red: 0, green: 10, blue: 0};
   },
   methods: {
     set_color: function () {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.color);
+      this.red = parseInt(result[1], 16)
+      this.green = parseInt(result[2], 16)
+      this.blue = parseInt(result[3], 16)
       axios.defaults.baseURL = "http://" + "esp-home" + ".local";
       axios
         .post("/api/v1/light/brightness", {
