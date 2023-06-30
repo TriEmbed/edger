@@ -21,7 +21,7 @@ import axios from "axios";
 
 export default {
   data () {
-    return {color: '#001000', red: 0, green: 10, blue: 0};
+    return {color: '#0A0000', red: 10, green: 0, blue: 0};
   },
   methods: {
     set_color: function () {
