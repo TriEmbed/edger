@@ -18,7 +18,7 @@ const endPoints = {
 export let deviceLists = []
 //
 const openDevice = (name) => {
-  const address = "http://" + name + ".local"
+  const address = "http://" + name
   return axios.create({
     baseURL: address, timeout: 1000, responseType: "json", mode: "no_cors", headers: {},
   });
@@ -209,6 +209,7 @@ export const getMenus = function (ip = {}) {
     newTopItem.path = "/esp/i2c"
     newTopItem.name = "cat"
     newTopItem.type = 'MENU'
+    newTopItem.temporary=true
     newTopItem.to = "/device"
     newTopItem.children = response.data.menus
     menuToSpliceIn.splice(1, 0, newTopItem)

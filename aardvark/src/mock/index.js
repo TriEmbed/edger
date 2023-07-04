@@ -3,7 +3,7 @@ import request from '@/utils/request'
 import _ from 'lodash-es'
 import cookies from "vue-cookies";
 import buildMenuItem from "@/utils/myRoutes"
-import deviceLists from "@/api/esp"
+//import deviceLists from "@/api/esp"
 import store from "@/store";
 
 const packageAdaptor = new Adaptor(request, {delayResponse: 300})
@@ -25,7 +25,7 @@ packageAdaptor.onPost(/api\/login/).reply(config => {
 //    }
 //  })
 
-  console.log((deviceLists))
+ // console.log((deviceLists))
   const val = [200, {
     username,
     token: 'ac21ebab-bddc-41a3-bef5-4ecf3325c888',

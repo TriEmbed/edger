@@ -21,7 +21,7 @@
         :item-key="itemKey"
         :items="items"
         :multi-sort="multiSort"
-        :no-data-text="loading ? 'Loading...' : 'No data'"
+        :no-data-text="loading ? 'Waiting for scan...' : 'No data'"
         :options="options"
         :server-items-length="total || 0"
         class="elevation-0 fill-width fill-height d-flex flex-column overflow-x-hidden"
@@ -33,7 +33,7 @@
           <slot :name="slot" v-bind="scope" />
         </template>
       </v-data-table>
-      <VLoading :value="loading" absolute />
+<!--      <VLoading :value="loading" absolute />-->
     </div>
   </div>
 </template>

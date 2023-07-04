@@ -14,7 +14,7 @@ export const AccountActions = {
   LOGOUT: 'LOGOUT',
   BUILD_ROUTES: 'BUILD_ROUTES',
 }
-
+var loaded = false
 export default {
   namespaced: true,
   state: {
@@ -56,6 +56,22 @@ export default {
          * Once a dynamic location was refreshed manually in browser,
          * the currentRoute's path will be resolved as '/'.
          */
+
+        if (!loaded) {
+
+          //nje hack alert hack alert hack alert hack alert hack alert hack alert
+          //      look for any menu item which is an ip address and remove it
+          for (let menuIndex=0; menuIndex < state.menus.length; menuIndex++) {
+            if (state.menus[menuIndex].temporary)
+              state.menus.splice(menuIndex, 1)
+            // if (/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(state.menus[menuIndex].text)) {
+            //
+            //   console.log(state.menus[menuIndex].text, state.menus[menuIndex].children)
+            //   state.menus.splice(menuIndex, 1)
+            // }
+          }
+          loaded = true
+        }
         const redirectedFrom = location.hash.replace('#', '')
         const to = {path: '/'}
 

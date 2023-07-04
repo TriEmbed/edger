@@ -19,7 +19,7 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
-    "build": "vue-cli-service build --mode production",
+    "build": "vue-cli-service build --mode development",
     "build:report": "vue-cli-service build --report --mode production && cd dist && live-server --open=./report.html",
     "lint": "vue-cli-service lint",
     "lint:style": "stylelint **/*.{html,vue} --custom-syntax postcss-html",
