@@ -1,9 +1,9 @@
 #include <string.h>
-#include <fcntl.h>
+
 #include "esp_http_server.h"
 #include "esp_system.h"
 #include "esp_log.h"
-#include "esp_vfs.h"
+
 
 #include "stdatomic.h"
 
@@ -594,21 +594,20 @@ getFun (char *parm, UNUSED httpd_req_t * req)
 // we care about
       paramString = pinString;
       cJSON *address =
-	cJSON_GetObjectItemCaseSensitive (monitor_json, paramString);
-      if (!(address && cJSON_IsNumber (address)))
-	{
-	  goto error;
-	}
+              cJSON_GetObjectItemCaseSensitive(monitor_json, paramString);
+      if (!(address && cJSON_IsNumber(address))) {
+          goto error;
+      }
 
-     
+
 
 // everthing looks good call the get
-      printf ("{ \"%s\": %d, \"%s\": %d , \"%s\": %d } \n\n\n",
-	      pinString, (unsigned int) (address->valuedouble));
-      cJSON_AddItemToObject (response, funName,
-			     gpioGet ((unsigned char) (address->valuedouble)));
+      // printf ("{ \"%s\": %d, \"%s\": %d , \"%s\": %d } \n\n\n",
+      //   pinString, (unsigned int) (address->valuedouble));
+      cJSON_AddItemToObject(response, funName,
+                            gpioGet((unsigned char) (address->valuedouble)));
       return response;
-    }
+  }
 
 error:				// we don't want to be here
   cJSON_AddStringToObject (response, "error", paramString);
@@ -628,7 +627,7 @@ gpio_patch_handler (httpd_req_t * req)
 {
 
   static const uriParam configurationParams[] = {
-    //{.name = scanString, .fun = scanFun},
+          //{.name = scanString, .fun = scanFun},rm
 //            {.name = getString, .fun = getFun},
     {.name = getString,.fun = getFun},
 //            {.name = infoString, .fun = infoFun},

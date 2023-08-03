@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "argtable3/argtable3.h"
 #include "driver/i2c.h"
-#include "esp_myconsole.h"
+#include "edger_console.h"
 #include "esp_log.h"
 #include "cJSON.h"
 #include <driver/gpio.h>
@@ -18,8 +18,8 @@ gpioGet (uint8_t pin)
     SemaphoreHandle = xSemaphoreCreateMutex ();
   xSemaphoreTake (SemaphoreHandle, portMAX_DELAY);
 
- 
-  cJSON *response = cJSON_CreateObject ();
+
+    cJSON *response = cJSON_CreateObject ();
   cJSON_AddNumberToObject (response, "pin", gpio_get_level(pin));
 
   xSemaphoreGive (SemaphoreHandle);

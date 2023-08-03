@@ -1,4 +1,4 @@
-idf_component_register(SRCS "edger_main.c"
+idf_component_register(SRCS "esp_rest_main.c"
         "rest_server.c"
         "buildMenu.c"
         "configuration/system_info.c"
@@ -14,7 +14,11 @@ idf_component_register(SRCS "edger_main.c"
         "BLE/BLEDriver.c"
         "gpio/gpio.c"
         "gpio/gpioDriver.c"
-        "../components/edger_console/edger_console.c"
+        "console/console_example_main.c"
+        "ADT7420/ADT7420.c"
+        "hsppad143a/hsppad143a.c"
+        "file_serving/mount.c"
+        "file_serving/file_server.c"
         INCLUDE_DIRS ".")
 
 

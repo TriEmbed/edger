@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include "argtable3/argtable3.h"
 #include "driver/i2c.h"
-#include "esp_myconsole.h"
+#include "edger_console.h"
 #include "esp_log.h"
 #include "cJSON.h"
 #include "nvs_flash.h"

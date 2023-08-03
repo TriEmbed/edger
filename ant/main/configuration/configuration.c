@@ -9,7 +9,7 @@
 #include <time.h>
 
 #include <esp_sntp.h>
-#include <esp_log.h>
+
 #include "utilities.h"
 #include "rest_server.h"
 #include "configuration.h"

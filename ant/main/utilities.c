@@ -13,7 +13,7 @@ static char *
 uri_decode(const char *src) {
     int i = 0;
     size_t size = 0;
-    size_t len = 0;
+    size_t len;
     char *dec = NULL;
     char tmp[3];
     char ch = 0;

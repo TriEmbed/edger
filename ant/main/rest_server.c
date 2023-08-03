@@ -13,18 +13,16 @@
 #include <esp_log.h>
 #include <esp_vfs.h>
 #include <cJSON.h>
-#include <time.h>
 
-#include <http_parser.h>
 #include "configuration/system_info.h"
 #include "rest_server.h"
 //#include "i2cDriver.h"
 #include "configuration/configuration.h"
 #include "utilities.h"
 #include "i2c/i2c.h"
-#include "gpio/gpio.h"
-//#include "nvram.h"
-#include "esp_myconsole.h"
+
+
+#include "edger_console.h"
 
 
 cJSON *createMenus();
@@ -44,8 +42,7 @@ static const char *REST_TAG = "esp-rest";
 #define CHECK_FILE_EXTENSION(filename, ext) (strcasecmp(&filename[strlen(filename) - strlen(ext)], ext) == 0)
 
 /* Set HTTP response content type according to file extension */
-static esp_err_t
-set_content_type_from_file(httpd_req_t *req, const char *filepath) {
+static esp_err_t set_content_type_from_file(httpd_req_t *req, const char *filepath) {
     const char *type = "text/plain";
     if (CHECK_FILE_EXTENSION (filepath, ".html")) {
         type = "text/html";
@@ -63,13 +60,11 @@ set_content_type_from_file(httpd_req_t *req, const char *filepath) {
     return httpd_resp_set_type(req, type);
 }
 
-esp_err_t
-cors_header(httpd_req_t *req) {
+esp_err_t cors_header(httpd_req_t *req) {
 //  httpd_resp_set_type (req, "application/json");
     httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
 //  httpd_resp_set_hdr(req,"Access-Control-Max-Age", "600");
-    httpd_resp_set_hdr(req, "Access-Control-Allow-Methods",
-                       "PATCH,PUT,POST,GET,OPTIONS");
+    httpd_resp_set_hdr(req, "Access-Control-Allow-Methods", "PATCH,PUT,POST,GET,OPTIONS");
     httpd_resp_set_hdr(req, "Access-Control-Allow-Headers", "*");
     httpd_resp_set_hdr(req, "Access-Control-Allow-Credentials", "true");
 
@@ -77,20 +72,17 @@ cors_header(httpd_req_t *req) {
 }
 
 /* Simple handler for getting temperature data */
-static esp_err_t
-cors_handler(httpd_req_t *req) {
+static esp_err_t cors_handler(httpd_req_t *req) {
     cors_header(req);
     httpd_resp_sendstr(req, NULL);
     return ESP_OK;
 }
 
 /* Send HTTP response with the contents of the requested file */
-static esp_err_t
-rest_common_get_handler(httpd_req_t *req) {
+static esp_err_t rest_common_get_handler(httpd_req_t *req) {
     char filepath[FILE_PATH_MAX];
 
-    rest_server_context_t *rest_context =
-            (rest_server_context_t *) req->user_ctx;
+    rest_server_context_t *rest_context = (rest_server_context_t *) req->user_ctx;
     strlcpy(filepath, rest_context->base_path, sizeof(filepath));
     if (req->uri[strlen(req->uri) - 1] == '/') {
         strlcat(filepath, "/index.html", sizeof(filepath));
@@ -101,8 +93,7 @@ rest_common_get_handler(httpd_req_t *req) {
     if (fd == -1) {
         ESP_LOGE(REST_TAG, "Failed to open file : %s", filepath);
         /* Respond with 500 Internal Server Error */
-        httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
-                            "Failed to read existing file");
+        httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to read existing file");
         return ESP_FAIL;
     }
 
@@ -123,8 +114,7 @@ rest_common_get_handler(httpd_req_t *req) {
                 /* Abort sending file */
                 httpd_resp_sendstr_chunk(req, NULL);
                 /* Respond with 500 Internal Server Error */
-                httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
-                                    "Failed to send file");
+                httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to send file");
                 return ESP_FAIL;
             }
         }
@@ -138,24 +128,21 @@ rest_common_get_handler(httpd_req_t *req) {
 }
 
 /* Simple handler for light brightness control */
-static esp_err_t
-light_brightness_post_handler(httpd_req_t *req) {
+static esp_err_t light_brightness_post_handler(httpd_req_t *req) {
     int total_len = req->content_len;
     int cur_len = 0;
     char *buf = ((rest_server_context_t *) (req->user_ctx))->scratch;
     int received = 0;
     if (total_len >= SCRATCH_BUFSIZE) {
         /* Respond with 500 Internal Server Error */
-        httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
-                            "content too long");
+        httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "content too long");
         return ESP_FAIL;
     }
     while (cur_len < total_len) {
         received = httpd_req_recv(req, buf + cur_len, total_len);
         if (received <= 0) {
             /* Respond with 500 Internal Server Error */
-            httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR,
-                                "Failed to post control value");
+            httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, "Failed to post control value");
             return ESP_FAIL;
         }
         cur_len += received;
@@ -166,27 +153,22 @@ light_brightness_post_handler(httpd_req_t *req) {
     int red = cJSON_GetObjectItem(root, "red")->valueint;
     int green = cJSON_GetObjectItem(root, "green")->valueint;
     int blue = cJSON_GetObjectItem(root, "blue")->valueint;
-    ESP_LOGI(REST_TAG, "Light control: red = %d, green = %d, blue = %d", red,
-             green, blue);
+    ESP_LOGI(REST_TAG, "Light control: red = %d, green = %d, blue = %d", red, green, blue);
     cJSON_Delete(root);
     httpd_resp_sendstr(req, "Post control value successfully");
     return ESP_OK;
 }
 
-extern char *menus;
-
 
 /* Simple handler for getting system handler */
-esp_err_t
-menu_get_handler(httpd_req_t *req) {
+esp_err_t menu_get_handler(httpd_req_t *req) {
     httpd_resp_set_type(req, "application/json");
     cors_header(req);
 
     cJSON *root = cJSON_CreateObject();
     cJSON_AddStringToObject(root, "username", "admin");
 
-    cJSON_AddStringToObject(root, "token",
-                            "ac21ebab-bddc-41a3-bef5-4ecf3325c888");
+    cJSON_AddStringToObject(root, "token", "ac21ebab-bddc-41a3-bef5-4ecf3325c888");
     cJSON_AddItemToObject(root, "permissions", cJSON_CreateArray());
     cJSON_AddItemToObject(root, "menus", createMenus());
     const char *sys_info = cJSON_Print(root);
@@ -197,8 +179,7 @@ menu_get_handler(httpd_req_t *req) {
 }
 
 /* Simple handler for getting temperature data */
-static esp_err_t
-temperature_data_get_handler(httpd_req_t *req) {
+static esp_err_t temperature_data_get_handler(httpd_req_t *req) {
     httpd_resp_set_type(req, "application/json");
     cors_header(req);
     cJSON *root = cJSON_CreateObject();
@@ -262,16 +243,13 @@ static commandPath[] = {
 };
 
 
-esp_err_t
-start_rest_server(const char *base_path) {
+esp_err_t start_rest_server(const char *base_path) {
 
     REST_CHECK (base_path, "wrong base path", err);
-    rest_server_context_t *rest_context =
-            calloc(1, sizeof(rest_server_context_t));
+    rest_server_context_t *rest_context = calloc(1, sizeof(rest_server_context_t));
 
     REST_CHECK (rest_context, "No memory for rest context", err);
-    strlcpy(rest_context->base_path, base_path,
-            sizeof(rest_context->base_path));
+    strlcpy(rest_context->base_path, base_path, sizeof(rest_context->base_path));
 
     httpd_handle_t server = NULL;
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
@@ -279,18 +257,12 @@ start_rest_server(const char *base_path) {
     config.uri_match_fn = httpd_uri_match_wildcard;
 
     ESP_LOGI(REST_TAG, "Starting HTTP Server");
-    REST_CHECK (httpd_start(&server, &config) == ESP_OK,
-                "Start server failed", err_start);
+    REST_CHECK (httpd_start(&server, &config) == ESP_OK, "Start server failed", err_start);
 
 //   server.enableCORS();
     /////////////////////////////////////////////
     for (int n = 0; n < NELEMS (commandPath); n++) {
-        httpd_uri_t uri = {
-                .uri = commandPath[n].path,
-                .method = commandPath[n].method,
-                .handler = commandPath[n].handler,
-                .user_ctx = rest_context
-        };
+        httpd_uri_t uri = {.uri = commandPath[n].path, .method = commandPath[n].method, .handler = commandPath[n].handler, .user_ctx = rest_context};
         httpd_register_uri_handler(server, &uri);
     }
     return ESP_OK;
