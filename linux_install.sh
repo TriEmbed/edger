@@ -157,5 +157,5 @@ fi
 ## print final message (note aardvark final message will precede this hence not mentioned)
 echo "Use the change wifi icon (or changewifi script) to customize, build, and flash ant"
 echo "to your dev board. It must be plugged in for this."
-echo "To use idf.py directly, first type idfexport."
+echo "You can also use idf.py directly, thanks to a bootstrap alias in .bashrc"
 echo "For any of this to work you'll need to log out and back in to load the changes made by the install script."
