@@ -46,6 +46,10 @@ This script does the following:
   * CHANGE WIFI - runs the change wifi script
   * START AARDVARK - runs the startaardvark script
   * START BROWSER - opens the default browser to the local aardvark URL
+9. Appends to ~/.bashrc if it's not there already:
+  * append $HOME/bin to PATH
+  * alias for idf.py that will load the idf exports before running it
+  * env variables settings for NVM
 
 ## User group
 The user group kickoff meeting was held on 8/31/2022. Video here: https://youtu.be/zqejgwW3aIo

@@ -1,11 +1,11 @@
 <template>
   <v-container>
     <v-layout text-xs-center wrap>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex offset-sm3 sm6 xs12>
         <v-card>
           <v-toolbar
-            flat
             dense
+            flat
           >
             <v-toolbar-title>
               <span class="subheading">Blinker speed</span>
@@ -21,18 +21,18 @@
                 <span
                   class="text-h2 font-weight-light"
                   v-text="bpm"
-                ></span>
+                />
                 <span class="subheading font-weight-light mr-1">BPM</span>
                 <v-fade-transition>
                   <v-avatar
                     v-if="isOn"
-                    color="red"
                     :style="{
                       animationDuration: animationDuration
                     }"
                     class="mb-1 v-avatar--metronome"
+                    color="red"
                     size="12"
-                  ></v-avatar>
+                  />
                 </v-fade-transition>
               </v-col>
               <v-col class="text-right">
@@ -52,27 +52,29 @@
 
             <v-slider
               v-model="bpm"
-              color="#005db5"
-              track-color="grey"
               always-dirty
-              min="10"
+              color="#005db5"
               max="600"
-              v-on:mouseup="post_duration"
+              min="10"
+              track-color="grey"
+              @mouseup="post_duration"
             >
-              <template v-slot:prepend>
+              <template #prepend>
                 <v-icon
                   color="#005db5"
                   @click="decrement"
                 >
-                remove
+                  remove
                 </v-icon>
               </template>
 
-              <template v-slot:append>
+              <template #append>
                 <v-icon
                   color="#005db5"
                   @click="increment"
-                > add </v-icon>
+                >
+                  add
+                </v-icon>
               </template>
             </v-slider>
           </v-card-text>
@@ -87,13 +89,13 @@ export default {
   data: () => ({
     bpm: 120,
     interval: null,
-    isOn: false
+    isOn: false,
   }),
 
   computed: {
     animationDuration () {
       return `${30 / this.bpm}s`
-    }
+    },
   },
 
   mounted: function () {
@@ -105,7 +107,7 @@ export default {
     post_duration () {
       this.$ajax
         .post('/api/v1/blinker/duration', {
-          duration_ms: Math.round(60000 / this.bpm)
+          duration_ms: Math.round(60000 / this.bpm),
         })
         .then(data => {
           console.log(data)
@@ -117,7 +119,7 @@ export default {
     post_state () {
       this.$ajax
         .post('/api/v1/blinker/state', {
-          state: this.isOn
+          state: this.isOn,
         })
         .then(data => {
           console.log(data)
@@ -137,25 +139,25 @@ export default {
     toggle () {
       this.isOn = !this.isOn
       this.post_state()
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style>
-  @keyframes metronome-example {
-    from {
-      transform: scale(0.2);
-    }
-
-    to {
-      transform: scale(1);
-    }
+@keyframes metronome-example {
+  from {
+    transform: scale(0.2);
   }
 
-  .v-avatar--metronome {
-    animation-direction: alternate;
-    animation-iteration-count: infinite;
-    animation-name: metronome-example;
+  to {
+    transform: scale(1);
   }
+}
+
+.v-avatar--metronome {
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-name: metronome-example;
+}
 </style>

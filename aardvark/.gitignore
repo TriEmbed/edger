@@ -15,8 +15,9 @@ yarn-debug.log*
 yarn-error.log*
 /coverage/
 
-# Editor directories and files
-.idea
+# Editor/debug directories and files
+
+/.idea
 .vscode/*
 !.vscode/launch.json
 *.suo
@@ -24,4 +25,3 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
-node_modules

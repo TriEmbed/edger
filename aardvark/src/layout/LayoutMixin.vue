@@ -12,6 +12,7 @@ export default {
       'appPrimaryColor',
       'appThemeDark',
       'appMultipleTabs',
+      'appShowHidden',
     ]),
     ...mapState('devices', []),
 
@@ -28,6 +29,7 @@ export default {
       toggleAppNavigation: SettingMutations.TOGGLE_APP_NAVIGATION,
       toggleAppPermanentNavigation: SettingMutations.TOGGLE_APP_PERMANENT_NAVIGATION,
       toggleAppMultipleTabs: SettingMutations.TOGGLE_APP_MULTIPLE_TABS,
+      toggleAppShowHidden: SettingMutations.TOGGLE_APP_SHOW_HIDDEN,
     }),
 
     ...mapActions('account', {

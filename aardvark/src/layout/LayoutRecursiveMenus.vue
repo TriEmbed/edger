@@ -3,7 +3,7 @@
     <template v-for="item in items">
       <!-- / branch nodes -->
       <v-list-group
-        v-if="item.type === 'MENU' && !item.hidden"
+        v-if="item.type === 'MENU' && (!item.hidden || showHidden)"
         :key="item.to"
         v-hasPermission="item.permissions"
         :class="sub ? 'group-sub' : ''"
@@ -20,12 +20,12 @@
             {{ item.text }}
           </v-list-item-title>
         </template>
-        <LayoutRecursiveMenus v-if="item.children.length" :items="item.children" sub />
+        <LayoutRecursiveMenus :showHidden=showHidden v-if="item.children.length" :items="item.children" sub />
       </v-list-group>
 
       <!-- / leaf nodes -->
       <v-list-item
-        v-if="item.type === 'VIEW' && !item.hidden"
+        v-if="item.type === 'VIEW' && (!item.hidden || showHidden)"
         :key="item.to"
         v-hasPermission="item.permissions"
         :to="item.to || item.redirect"
@@ -55,6 +55,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showHidden: {
+      type: Boolean,
+      default: false,
+    }
   },
 }
 </script>

@@ -6,6 +6,7 @@ export const SettingMutations = {
   TOGGLE_APP_SETTING: 'TOGGLE_APP_SETTING',
   TOGGLE_APP_THEME_DARK: 'TOGGLE_APP_THEME_DARK',
   TOGGLE_APP_MULTIPLE_TABS: 'TOGGLE_APP_MULTIPLE_TABS',
+  TOGGLE_APP_SHOW_HIDDEN: 'TOGGLE_APP_SHOW_HIDDEN',
 }
 
 export const SettingActions = {
@@ -22,6 +23,7 @@ export default {
     appThemeDark: false,
     appSetting: false,
     appMultipleTabs: true,
+    appShowHidden: false,
   },
   mutations: {
     [SettingMutations.SET_APP_HEADER_HEIGHT] (state, payload) {
@@ -44,6 +46,9 @@ export default {
     },
     [SettingMutations.TOGGLE_APP_MULTIPLE_TABS] (state) {
       state.appMultipleTabs = !state.appMultipleTabs
+    },
+    [SettingMutations.TOGGLE_APP_SHOW_HIDDEN] (state) {
+      state.appShowHidden = !state.appShowHidden
     },
   },
 }

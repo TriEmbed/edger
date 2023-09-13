@@ -11,11 +11,9 @@ export const EspMutations = {
 export default {
   namespaced: true,
   state: {
-    openedRoutes: ["was"],
     info: "",
+    devices: [],
     scan: [],
-    count: 0,
-
   },
   mutations: {
     increment: state => ++state.count,
@@ -23,7 +21,15 @@ export default {
       state.openedRoutes = routes
     },
     [EspMutations.ESP_INFO] (state, routes = []) {
+
       state.info = routes
+      for (const id of state.devices) {
+        if (id['MAC'] === routes['MAC']) {
+          return
+        }
+
+      }
+      state.devices.push(routes)
     },
     [EspMutations.ESP_I2C_SCAN] (state, routes = []) {
       state.scan = routes

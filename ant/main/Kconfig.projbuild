@@ -1,3 +1,17 @@
+menu "ledc"
+    config EXAMPLE_RMT_TX_GPIO
+        int "RMT TX GPIO"
+        default 8
+        help
+            Set the GPIO number used for transmitting the RMT signal.
+
+    config EXAMPLE_STRIP_LED_NUMBER
+        int "Number of LEDS in a strip"
+        default 1
+        help
+            A single RGB strip contains several LEDs.
+endmenu
+
 menu "console Configuration"
 
     config CONSOLE_STORE_HISTORY
@@ -15,6 +29,34 @@ menu "console Configuration"
             This value marks the maximum length of a single command line. Once it is
             reached, no more characters will be accepted by the console.
 
+endmenu
+
+menu "hsppad143a"
+
+    config HSPPAD143A
+        bool "Enable the hsppad143a water sensor"
+        default n
+       
+
+endmenu
+
+menu "ADT7420"
+
+    config ADT7420
+        bool "Enable the ADT7420 tempature sensor"
+        default n
+       
+
+endmenu
+
+
+menu "Renesas/Dialog"
+
+    config  DIALOG
+        bool "enable dialog FPGA"
+        default y
+    
+            
 endmenu
 
 menu "Example Configuration"

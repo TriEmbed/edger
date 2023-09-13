@@ -1,9 +1,12 @@
 #!/bin/bash 
-# Hack Edger onto a Linux system. Currently just handles Ubuntu.
+# Install tools and prepare for building edger/ant
 
 # Here is an important todo: This script needs to detect changes to the edger repo and rebuild ant and aardvark as needed
 
 # The Espressif docs have the recipes for package installs for other Linux flavors
+
+# Changes:
+# 5/26/2023 - Add options for specifying WIFI userid and password
 
 ## default values for optional arguments
 EDGER_DIR_DEFAULT=$HOME/workspace/esp32/edger
@@ -108,6 +111,7 @@ fi
 echo "==> Install the prerequisite packages"
 # python3, libusb-1.0-0, wget installed already on 20.04 and 22.04
 # python3-venv and python3-pip will install python3 as dep if needed
+sudo apt-get -q -q -y update
 sudo apt-get install -q -q -y \
   git  \
   python3-venv python3-pip \
@@ -214,17 +218,17 @@ if [ ! -d $HOME/.espressif ] ; then
   bash ./install.sh
 fi
 
-echo "==> checking for idfexport function in .bashrc"
-grep -q 'idfexport()' $HOME/.bashrc
+echo "==> checking for idf.py alias in .bashrc"
+grep -q 'alias idf.py=' $HOME/.bashrc
 if [ $? -eq 0 ]; then
-  grep 'idfexport()' $HOME/.bashrc | grep -q $IDF_DIR/export.sh
+  grep 'alias idf.py=' $HOME/.bashrc | grep -q $IDF_DIR/export.sh
   if [ $? -ne 0 ]; then
     echo "==> updating idf export path in $HOME/.bashrc"
-    sed -i "s:^idfexport.*:idfexport() { source $IDF_DIR/export.sh; }:" $HOME/.bashrc
+    sed -i "s:^alias idf.py=.*:idf.py='source $IDF_DIR/export.sh;unalias idf.py;idf.py':" $HOME/.bashrc
   fi
 else
-  echo "==> adding idfexport function to $HOME/.bashrc"
-  echo "idfexport() { source $IDF_DIR/export.sh; }" >> $HOME/.bashrc
+  echo "==> adding idf.py alias to $HOME/.bashrc"
+  echo "alias idf.py='source $IDF_DIR/export.sh;unalias idf.py;idf.py'" >> $HOME/.bashrc
 fi
 
 ## Not sure if we expect someone to source this and expect commands
@@ -239,5 +243,5 @@ fi
 ## print final message
 echo "Now use the change wifi icon (or changewifi script) to customize your dev board." 
 echo "It must be plugged in for this."
-echo "To use idf.py directly, first type idfexport."
+echo "You can also use idf.py directly, thanks to a bootstrap alias in .bashrc"
 echo "For any of this to work you'll need to log out and back in to load the changes made by the install script."

@@ -18,24 +18,19 @@
         </v-row>
       </template>
 
-      <template #actions>
-        <v-btn class="mr-2" depressed tile @click="handleAdd">
-          Add item
-        </v-btn>
-      </template>
-
-      <template #[`item.number`]="{ index }">
-        {{ index + 1 }}
-      </template>
-
-      <template #[`item.time`]="{ item }">
-        <v-chip :color="item.time >= 60 ? 'primary' : 'dark'">
-          {{ item.time }}
-        </v-chip>
-      </template>
-
-      <template #[`item.occupy`]="{ item }">
-        {{ item.occupy ? 'Yes' : 'No' }}
+      <template #headerButtons>
+        <div class="d-flex flex-row pb-1 px-2">
+          <v-btn class="mr-2" depressed tile @click="handleAdd">
+            Add item
+          </v-btn>
+          <v-spacer />
+          <v-btn class="mr-2" depressed tile type="submit" @click.stop.prevent="refresh(true)">
+            Inquire
+          </v-btn>
+          <v-btn depressed tile @click="refresh()">
+            refresh
+          </v-btn>
+        </div>
       </template>
 
       <template #[`item.actions`]="{ item }">
@@ -94,7 +89,7 @@ export default {
           fixed: true,
         },
         {
-          text: 'Project name',
+          text: 'Project index',
           align: 'center',
           sortable: false,
           value: 'name',

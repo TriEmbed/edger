@@ -132,13 +132,13 @@ export default {
     selectionCount () {
       return {
         r:
-            this.selection.r <= this.selection.sr
-              ? this.selection.r
-              : this.selection.sr,
+          this.selection.r <= this.selection.sr
+            ? this.selection.r
+            : this.selection.sr,
         c:
-            this.selection.c <= this.selection.sc
-              ? this.selection.c
-              : this.selection.sc,
+          this.selection.c <= this.selection.sc
+            ? this.selection.c
+            : this.selection.sc,
         w: Math.abs(this.selection.sc - this.selection.c) + 1,
         h: Math.abs(this.selection.sr - this.selection.r) + 1,
       };
@@ -163,7 +163,7 @@ export default {
       if (myHeader.length === 0) {
         myHeader.push({name: "", width: firstColWidth})
         for (let j = 0; j < 16; j++) {
-          myHeader.push({name: j, width: colWidth});
+          myHeader.push({name: '0x'+j.toString(16), width: colWidth});
         }
       }
       return myHeader
@@ -265,9 +265,9 @@ export default {
       }
       if (
         this.selectionCount.c === c &&
-          this.selectionCount.r === r &&
-          this.selectionCount.w === 1 &&
-          this.selectionCount.h === 1
+        this.selectionCount.r === r &&
+        this.selectionCount.w === 1 &&
+        this.selectionCount.h === 1
       ) {
         this.editHere();
         return;
@@ -372,7 +372,7 @@ export default {
 
       if (
         el.scrollLeft <
-          this.positionLeft(this.selection.c) - el.clientWidth
+        this.positionLeft(this.selection.c) - el.clientWidth
       ) {
         el.scrollLeft = this.positionLeft(this.selection.c);
       }

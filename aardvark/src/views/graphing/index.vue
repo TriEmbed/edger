@@ -1,7 +1,7 @@
 <template>
   <div class="exception fill-width d-flex flex-column justify-center align-center">
     <div :style="{ filter: appThemeDark ? 'invert(100%)': 'none' }" class="exception-img mb-6" />
-    <h1>graphing</h1>
+    <h1>interface</h1>
     <h1>{{ config.title }}</h1>
     <h2>{{ config.desc }}</h2>
     <div class="mt-6">
