@@ -20,7 +20,7 @@ export let deviceLists = []
 const openDevice = (name) => {
   const address = "http://" + name
   return axios.create({
-    baseURL: address, timeout: 1000, responseType: "json", mode: "no_cors", headers: {},
+    baseURL: address, timeout: 1000, responseType: "json", mode: "no_cors", headers: { 'Cache-control': 'max-age=0' }
   });
 };
 //
